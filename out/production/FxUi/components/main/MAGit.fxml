@@ -107,25 +107,20 @@
         </rowConstraints>
          <children>
             <Button fx:id="commitTreeBtn" mnemonicParsing="false" prefHeight="30.0" prefWidth="326.0" text="Commit Tree" />
-            <Button fx:id="commitBtn" mnemonicParsing="false" prefHeight="92.0" prefWidth="150.0" text="Commit!" GridPane.columnIndex="4" />
+            <Button fx:id="commitBtn" mnemonicParsing="false" onAction="#makeCommit" prefHeight="92.0" prefWidth="150.0" text="Commit!" GridPane.columnIndex="4" />
             <Button fx:id="homeBtn" mnemonicParsing="false" onAction="#showWcStatus" prefHeight="30.0" prefWidth="232.0" text="Home" GridPane.columnIndex="2" />
          </children>
       </GridPane>
    </bottom>
    <center>
-      <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
+      <VBox fx:id="mainContent" alignment="TOP_CENTER" BorderPane.alignment="CENTER">
          <children>
             <Label text="WC" />
             <ScrollPane fx:id="modifiedFilesView" VBox.vgrow="ALWAYS">
                <content>
                   <HBox>
                      <children>
-                        <Label text="Created Files:" />
-                        <ListView fx:id="createdList" prefWidth="130.0" />
-                        <Label text="Modified Files:" />
-                        <ListView fx:id="modifiedList" prefWidth="130.0" />
-                        <Label text="Deleted Files" />
-                        <ListView fx:id="deletedList" prefWidth="130.0" />
+                        <ListView fx:id="modifiedList" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                </content>

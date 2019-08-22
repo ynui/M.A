@@ -30,6 +30,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tasks.deployXmlTask;
 
+import javax.xml.soap.Text;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -313,6 +314,7 @@ public class MAGitController {
 
     @FXML
     private void showWcStatus(ActionEvent actionEvent) {
+        if(appManager.workingPath == null) return;
         DiffHandler diff = manager.getDiff();
         if (appManager.isCleanState(diff)){
             isCleanState.set(true);
@@ -323,16 +325,36 @@ public class MAGitController {
     }
 
     private void showCleanState() {
-        mainContent.getChildren().a
+        mainContent.getChildren().clear();
+        mainContent.getChildren().add(new Label("Woo Hoo!\nNo Local "))
     }
 
     private void showNotCleanState(DiffHandler diff) {
         isCleanState.set(false);
-        createdList.getItems().clear();
         modifiedList.getItems().clear();
-        deletedList.getItems().clear();
-        createdList.getItems().addAll(diff.getCreated());
-        modifiedList.getItems().addAll(diff.getChanged());
-        deletedList.getItems().addAll(diff.getDeleted());
+        addToModifiedListView(diff.getCreated(),"+ CREATED:");
+        addToModifiedListView(diff.getChanged(),"* CHANGED:");
+        addToModifiedListView(diff.getDeleted(),"- REMOVED:");
+        modifiedList.setPrefHeight(modifiedList.getItems().size() * 24);
+    }
+
+    private void addToModifiedListView(List<String> lst, String icon) {
+        String chaser =icon+" ";
+        List<String> temp = new LinkedList<>();
+        temp.addAll(lst);
+        temp.replaceAll(string -> chaser.concat(string));
+        modifiedList.getItems().addAll(temp);
+    }
+
+    @FXML
+    private void makeCommit(ActionEvent actionEvent) {
+        TextInputDialog dialog = setNewDialog("Commit", "Commting to "+manager.getHeadBranchName()+"\nEnter note:","");
+        dialog.showAndWait();
+        if(dialog.getResult() == null) return;
+        try {
+            manager.createNewCommit(dialog.getResult());
+        } catch (IOException e) {
+            ExceptionHandler.exceptionDialog(e);
+        }
     }
 }
