@@ -23,7 +23,6 @@ public class ExceptionHandler extends Throwable {
         msgProp = new SimpleStringProperty("msg");
     }
 
-
     @FXML
     private void exitDialog() {
         return;

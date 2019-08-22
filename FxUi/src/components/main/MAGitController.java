@@ -127,8 +127,7 @@ public class MAGitController {
         branchActions.disableProperty().bind(isRepoLoaded.not());
         openInExplorerItem.disableProperty().bind(isRepoLoaded.not());
     }
-
-
+    
     @FXML
     private void initEmptyRepo() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../../dialogs/newRepoDialog.fxml"));
