@@ -101,13 +101,15 @@ public class MAGitController {
     private Stage primaryStage;
     private appManager manager;
     @FXML
-    private ListView modifiedList;
+    private ListView<String> modifiedList;
     @FXML
-    private ListView deletedList;
+    private ListView<String> deletedList;
     @FXML
-    private ListView createdList;
+    private ListView<String> createdList;
     @FXML
     private ScrollPane modifiedFilesView;
+    @FXML
+    private VBox mainContent;
 
     public VBox getBranchesVbox() {
         return branchesVbox;
@@ -125,7 +127,7 @@ public class MAGitController {
         branchNameProp = new SimpleStringProperty();
         branchList = new LinkedList<>();
         isRepoLoaded = new SimpleBooleanProperty(false);
-        isCleanState = new SimpleBooleanProperty(false);
+        isCleanState = new SimpleBooleanProperty(true);
     }
 
     @FXML
@@ -136,7 +138,7 @@ public class MAGitController {
         branchNameLabel.textProperty().bind(branchNameProp);
         branchActions.disableProperty().bind(isRepoLoaded.not());
         openInExplorerItem.disableProperty().bind(isRepoLoaded.not());
-        modifiedFilesView.disableProperty().bind(isCleanState);
+        modifiedFilesView.visibleProperty().bind(isCleanState.not());
     }
 
     @FXML
@@ -313,12 +315,24 @@ public class MAGitController {
     private void showWcStatus(ActionEvent actionEvent) {
         DiffHandler diff = manager.getDiff();
         if (appManager.isCleanState(diff)){
-           // showCleanState();
+            isCleanState.set(true);
+           showCleanState();
             return;
         }
+        showNotCleanState(diff);
+    }
+
+    private void showCleanState() {
+        mainContent.getChildren().a
+    }
+
+    private void showNotCleanState(DiffHandler diff) {
+        isCleanState.set(false);
+        createdList.getItems().clear();
+        modifiedList.getItems().clear();
+        deletedList.getItems().clear();
         createdList.getItems().addAll(diff.getCreated());
         modifiedList.getItems().addAll(diff.getChanged());
         deletedList.getItems().addAll(diff.getDeleted());
-
     }
 }

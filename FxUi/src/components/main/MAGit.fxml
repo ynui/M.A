@@ -113,7 +113,7 @@
       </GridPane>
    </bottom>
    <center>
-      <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
+      <VBox fx:id="mainContent" alignment="TOP_CENTER" BorderPane.alignment="CENTER">
          <children>
             <Label text="WC" />
             <ScrollPane fx:id="modifiedFilesView" VBox.vgrow="ALWAYS">

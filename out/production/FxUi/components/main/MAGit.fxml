@@ -116,16 +116,16 @@
       <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
          <children>
             <Label text="WC" />
-            <ScrollPane VBox.vgrow="ALWAYS">
+            <ScrollPane fx:id="modifiedFilesView" VBox.vgrow="ALWAYS">
                <content>
                   <HBox>
                      <children>
                         <Label text="Created Files:" />
-                        <ListView prefWidth="130.0" />
+                        <ListView fx:id="createdList" prefWidth="130.0" />
                         <Label text="Modified Files:" />
-                        <ListView prefWidth="130.0" />
+                        <ListView fx:id="modifiedList" prefWidth="130.0" />
                         <Label text="Deleted Files" />
-                        <ListView prefWidth="130.0" />
+                        <ListView fx:id="deletedList" prefWidth="130.0" />
                      </children>
                   </HBox>
                </content>

@@ -56,6 +56,9 @@ public class DiffHandler {
     public void createModifiedFilesLists() {
         String commitHeadFolderSha1 = Commit.getHeadCommitRootFolderSha1();
         findModifiedFilesInFolder(changed, created, deleted, unmodifiedBlobs, commitHeadFolderSha1, appManager.workingPath);
+        created.replaceAll(s -> Paths.get(s).toString());
+        changed.replaceAll(s -> Paths.get(s).toString());
+        deleted.replaceAll(s -> Paths.get(s).toString());
         modifiedBlobs.addAll(created);
         modifiedBlobs.addAll(changed);
         modifiedBlobs.addAll(deleted);
