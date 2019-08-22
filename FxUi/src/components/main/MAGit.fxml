@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.main.MAGitController">
+   <top>
+       <VBox alignment="TOP_CENTER" prefHeight="112.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+          <children>
+            <MenuBar>
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Close" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Delete" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+              <GridPane alignment="CENTER">
+                  <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  </columnConstraints>
+                  <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  </rowConstraints>
+                 <children>
+                     <Label fx:id="repoNameLabel" text="Repo Name" />
+                     <Label text="Active Branch:" GridPane.columnIndex="1" />
+                     <Label fx:id="usernameLabel" text="Username" GridPane.columnIndex="2" />
+                     <Label fx:id="repoLocationLabel" text="Path to Repo" GridPane.rowIndex="1" />
+                     <Label fx:id="branchNameLabel" text="Branch Name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                     <MenuButton fx:id="repoActions" mnemonicParsing="false" text="Repo Actions" GridPane.rowIndex="2">
+                         <items>
+                             <MenuItem fx:id="repoLoadXml" mnemonicParsing="false" onAction="#loadXmlRepo" text="Load Repository From Xml" />
+                             <MenuItem fx:id="repoInitEmpty" mnemonicParsing="false" onAction="#initEmptyRepo" text="Init Empty Repository" />
+                             <MenuItem fx:id="repoSwitch" mnemonicParsing="false" onAction="#switchRepo" text="Switch Repository" />
+                        <MenuItem fx:id="openInExplorerItem" mnemonicParsing="false" onAction="#openInExplorer" text="Open in Explorer" />
+                         </items>
+                     </MenuButton>
+                     <MenuButton fx:id="branchActions" mnemonicParsing="false" text="Branch Actions" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                         <items>
+                             <MenuItem fx:id="branchShowAll" mnemonicParsing="false" onAction="#showAllBranches" text="Show All Branches" />
+                             <MenuItem fx:id="branchCreateNew" mnemonicParsing="false" onAction="#createNewBranch" text="Create New Branch" />
+                         </items>
+                     </MenuButton>
+                  <Button alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#changeUsername" text="Change User" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                 </children>
+              </GridPane>
+              <Separator prefWidth="200.0" />
+          </children>
+       </VBox>
+   </top>
+   <left>
+      <HBox BorderPane.alignment="CENTER">
+         <children>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Label text="Branches" />
+                  <ScrollPane fx:id="branchesScrollPane" prefHeight="244.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
+                     <content>
+                        <VBox fx:id="branchesVbox" spacing="5.0" />
+                     </content>
+                  </ScrollPane>
+               </children>
+            </VBox>
+            <VBox alignment="TOP_CENTER" prefHeight="258.0" prefWidth="147.0">
+               <children>
+                  <Label text="Commits" />
+                  <ScrollPane fx:id="commitsScrollPane" prefHeight="250.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
+                     <content>
+                        <VBox fx:id="commitsVbox" spacing="5.0" />
+                     </content>
+                  </ScrollPane>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </left>
+   <bottom>
+      <GridPane alignment="CENTER" BorderPane.alignment="CENTER">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Button fx:id="commitTreeBtn" mnemonicParsing="false" prefHeight="30.0" prefWidth="326.0" text="Commit Tree" />
+            <Button fx:id="commitBtn" mnemonicParsing="false" prefHeight="92.0" prefWidth="150.0" text="Commit!" GridPane.columnIndex="4" />
+            <Button fx:id="homeBtn" mnemonicParsing="false" prefHeight="30.0" prefWidth="232.0" text="Home" GridPane.columnIndex="2" />
+         </children>
+      </GridPane>
+   </bottom>
+   <center>
+      <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="WC" />
+            <ScrollPane VBox.vgrow="ALWAYS">
+               <content>
+                  <VBox>
+                     <children>
+                        <Label text="Label" />
+                        <ScrollPane>
+                           <content>
+                              <VBox />
+                           </content>
+                        </ScrollPane>
+                        <Label text="Label" />
+                        <ScrollPane>
+                           <content>
+                              <VBox />
+                           </content>
+                        </ScrollPane>
+                        <Label text="Label" />
+                        <ScrollPane>
+                           <content>
+                              <VBox />
+                           </content>
+                        </ScrollPane>
+                     </children>
+                  </VBox>
+               </content>
+            </ScrollPane>
+         </children>
+      </VBox>
+   </center>
+</BorderPane>

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="Engine:jar" />
+      <artifact name="UI:jar" />
+    </artifacts-to-build>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="5bcfa559-9148-47de-97a6-088c256a727f" name="Default Changelist" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
+  <component name="DefaultGradleProjectSettings">
+    <option name="isMigrated" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaFXApplication" />
+        <option value="FxmlFile" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1Pb0shr07FR9uykdx9qNL4uLoJW" />
+  <component name="PropertiesComponent">
+    <property name="Downloaded.Files.Path.Enabled" value="false" />
+    <property name="Repository.Attach.Annotations" value="false" />
+    <property name="Repository.Attach.JavaDocs" value="false" />
+    <property name="Repository.Attach.Sources" value="false" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_directory_selection" value="$PROJECT_DIR$/FxUi/src" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="project.structure.last.edited" value="Global Libraries" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="copyright" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src" />
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src\main" />
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\resources" />
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\JavaFxUI" />
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\JavaFxUI\src" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="UI" />
+      <recent name="" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="common" />
+      <recent name="components.main" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src\components\singleCommit" />
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src\components\main" />
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src" />
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi" />
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\resources\css" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="FxMain" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="FxMain" />
+      <module name="FxUi" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.FxMain" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="5bcfa559-9148-47de-97a6-088c256a727f" name="Default Changelist" comment="" />
+      <created>1563613305334</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1563613305334</updated>
+      <workItem from="1563613308446" duration="34210000" />
+      <workItem from="1563964478169" duration="18000" />
+      <workItem from="1564210139102" duration="15005000" />
+      <workItem from="1564228761585" duration="488000" />
+      <workItem from="1564303015753" duration="9645000" />
+      <workItem from="1564341278192" duration="11461000" />
+      <workItem from="1564475327717" duration="18038000" />
+      <workItem from="1564509314933" duration="14249000" />
+      <workItem from="1564563957221" duration="23120000" />
+      <workItem from="1564596046104" duration="51705000" />
+      <workItem from="1564911404779" duration="4372000" />
+      <workItem from="1564940679572" duration="379000" />
+      <workItem from="1564994209745" duration="16455000" />
+      <workItem from="1565029429993" duration="12708000" />
+      <workItem from="1565077193417" duration="5781000" />
+      <workItem from="1565093204860" duration="35547000" />
+      <workItem from="1565261154049" duration="8790000" />
+      <workItem from="1565428668376" duration="2650000" />
+      <workItem from="1565431670705" duration="22295000" />
+      <workItem from="1565514726902" duration="11190000" />
+      <workItem from="1565545008834" duration="19559000" />
+      <workItem from="1565614500615" duration="4704000" />
+      <workItem from="1565632619280" duration="1755000" />
+      <workItem from="1565636499390" duration="309000" />
+      <workItem from="1565637116672" duration="255000" />
+      <workItem from="1565651348328" duration="4533000" />
+      <workItem from="1565683380840" duration="16307000" />
+      <workItem from="1565705679222" duration="5407000" />
+      <workItem from="1565783276513" duration="3614000" />
+      <workItem from="1565789640748" duration="1422000" />
+      <workItem from="1565861385957" duration="4163000" />
+      <workItem from="1566033071187" duration="986000" />
+      <workItem from="1566046351501" duration="437000" />
+      <workItem from="1566047336960" duration="510000" />
+      <workItem from="1566067607583" duration="814000" />
+      <workItem from="1566123684999" duration="2435000" />
+      <workItem from="1566126900969" duration="346000" />
+      <workItem from="1566127705627" duration="43000" />
+      <workItem from="1566127777964" duration="6854000" />
+      <workItem from="1566136402940" duration="1601000" />
+      <workItem from="1566142670270" duration="2997000" />
+      <workItem from="1566204952428" duration="1225000" />
+      <workItem from="1566206201509" duration="17880000" />
+      <workItem from="1566238887855" duration="15313000" />
+      <workItem from="1566324382878" duration="10781000" />
+      <workItem from="1566407866851" duration="11008000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Engine/src/appManager/Commit.java</url>
+          <line>14</line>
+          <option name="timeStamp" value="69" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Engine/src/appManager/DiffHandler.java</url>
+          <line>100</line>
+          <option name="timeStamp" value="178" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/UI/src/Menu/MainMenu.java</url>
+          <line>197</line>
+          <option name="timeStamp" value="341" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Engine/src/tasks/deployXmlTask.java</url>
+          <line>28</line>
+          <option name="timeStamp" value="349" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="nameProp.value" language="JAVA" />
+      </configuration>
+    </watches-manager>
+  </component>
+</project>
