@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.main.MAGitController">
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.main.MAGitController">
    <top>
        <VBox alignment="TOP_CENTER" prefHeight="112.0" prefWidth="600.0" BorderPane.alignment="CENTER">
           <children>
@@ -108,7 +108,7 @@
          <children>
             <Button fx:id="commitTreeBtn" mnemonicParsing="false" prefHeight="30.0" prefWidth="326.0" text="Commit Tree" />
             <Button fx:id="commitBtn" mnemonicParsing="false" prefHeight="92.0" prefWidth="150.0" text="Commit!" GridPane.columnIndex="4" />
-            <Button fx:id="homeBtn" mnemonicParsing="false" prefHeight="30.0" prefWidth="232.0" text="Home" GridPane.columnIndex="2" />
+            <Button fx:id="homeBtn" mnemonicParsing="false" onAction="#showWcStatus" prefHeight="30.0" prefWidth="232.0" text="Home" GridPane.columnIndex="2" />
          </children>
       </GridPane>
    </bottom>
@@ -116,30 +116,18 @@
       <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
          <children>
             <Label text="WC" />
-            <ScrollPane VBox.vgrow="ALWAYS">
+            <ScrollPane fx:id="modifiedFilesView" VBox.vgrow="ALWAYS">
                <content>
-                  <VBox>
+                  <HBox>
                      <children>
-                        <Label text="Label" />
-                        <ScrollPane>
-                           <content>
-                              <VBox />
-                           </content>
-                        </ScrollPane>
-                        <Label text="Label" />
-                        <ScrollPane>
-                           <content>
-                              <VBox />
-                           </content>
-                        </ScrollPane>
-                        <Label text="Label" />
-                        <ScrollPane>
-                           <content>
-                              <VBox />
-                           </content>
-                        </ScrollPane>
+                        <Label text="Created Files:" />
+                        <ListView fx:id="createdList" prefWidth="130.0" />
+                        <Label text="Modified Files:" />
+                        <ListView fx:id="modifiedList" prefWidth="130.0" />
+                        <Label text="Deleted Files" />
+                        <ListView fx:id="deletedList" prefWidth="130.0" />
                      </children>
-                  </VBox>
+                  </HBox>
                </content>
             </ScrollPane>
          </children>

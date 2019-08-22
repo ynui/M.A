@@ -8,9 +8,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5bcfa559-9148-47de-97a6-088c256a727f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FxUi/src/common/ExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/common/ExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/components/main/MAGit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/main/MAGit.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/common/ExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/common/ExceptionHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGit.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGitController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGitController.class" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -172,7 +175,7 @@
       <workItem from="1566206201509" duration="17880000" />
       <workItem from="1566238887855" duration="15313000" />
       <workItem from="1566324382878" duration="10781000" />
-      <workItem from="1566407866851" duration="11381000" />
+      <workItem from="1566407866851" duration="12758000" />
     </task>
     <servers />
   </component>

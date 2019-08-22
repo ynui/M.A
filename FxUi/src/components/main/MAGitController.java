@@ -95,10 +95,19 @@ public class MAGitController {
     private SimpleStringProperty usernameProp;
     private SimpleStringProperty branchNameProp;
     private SimpleBooleanProperty isRepoLoaded;
+    private SimpleBooleanProperty isCleanState;
     private List<Branch> branchList;
 
     private Stage primaryStage;
     private appManager manager;
+    @FXML
+    private ListView modifiedList;
+    @FXML
+    private ListView deletedList;
+    @FXML
+    private ListView createdList;
+    @FXML
+    private ScrollPane modifiedFilesView;
 
     public VBox getBranchesVbox() {
         return branchesVbox;
@@ -116,6 +125,7 @@ public class MAGitController {
         branchNameProp = new SimpleStringProperty();
         branchList = new LinkedList<>();
         isRepoLoaded = new SimpleBooleanProperty(false);
+        isCleanState = new SimpleBooleanProperty(false);
     }
 
     @FXML
@@ -126,8 +136,9 @@ public class MAGitController {
         branchNameLabel.textProperty().bind(branchNameProp);
         branchActions.disableProperty().bind(isRepoLoaded.not());
         openInExplorerItem.disableProperty().bind(isRepoLoaded.not());
+        modifiedFilesView.disableProperty().bind(isCleanState);
     }
-    
+
     @FXML
     private void initEmptyRepo() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../../dialogs/newRepoDialog.fxml"));
@@ -296,5 +307,18 @@ public class MAGitController {
         } catch (Exception ex) {
             ExceptionHandler.exceptionDialog(ex);
         }
+    }
+
+    @FXML
+    private void showWcStatus(ActionEvent actionEvent) {
+        DiffHandler diff = manager.getDiff();
+        if (appManager.isCleanState(diff)){
+           // showCleanState();
+            return;
+        }
+        createdList.getItems().addAll(diff.getCreated());
+        modifiedList.getItems().addAll(diff.getChanged());
+        deletedList.getItems().addAll(diff.getDeleted());
+
     }
 }
