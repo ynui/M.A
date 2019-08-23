@@ -329,6 +329,8 @@ public class MAGitController {
         }
     }
 
+
+    
     private void showCleanState() {
         wcListOn.set(false);
     }
