@@ -122,6 +122,8 @@ public class Commit {
         headFolderSha1 = DigestUtils.sha1Hex(commitTxtRep);
         File commitRep = createTextRepresentation(commitTxtRep, headFolderSha1);
         zipFile(commitRep, DigestUtils.sha1Hex(commitTxtRep), PathConsts.OBJECTS_FOLDER());
+        headFolderRep.delete();
+        commitRep.delete();
         return headFolderSha1;
     }
 

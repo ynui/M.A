@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.main.MAGitController">
+<BorderPane prefHeight="425.0" prefWidth="789.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.main.MAGitController">
    <top>
-       <VBox alignment="TOP_CENTER" prefHeight="112.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+       <VBox alignment="TOP_CENTER" BorderPane.alignment="CENTER">
           <children>
             <MenuBar>
               <menus>
@@ -29,7 +30,7 @@
                 </Menu>
               </menus>
             </MenuBar>
-              <GridPane alignment="CENTER">
+              <GridPane alignment="CENTER" VBox.vgrow="ALWAYS">
                   <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -62,6 +63,9 @@
                      </MenuButton>
                   <Button alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#changeUsername" text="Change User" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                  </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
               </GridPane>
               <Separator prefWidth="200.0" />
           </children>
@@ -73,7 +77,7 @@
             <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
                <children>
                   <Label text="Branches" />
-                  <ScrollPane fx:id="branchesScrollPane" prefHeight="244.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
+                  <ScrollPane fx:id="branchesScrollPane" VBox.vgrow="ALWAYS">
                      <content>
                         <VBox fx:id="branchesVbox" spacing="5.0" />
                      </content>
@@ -83,9 +87,9 @@
             <VBox alignment="TOP_CENTER" prefHeight="258.0" prefWidth="147.0">
                <children>
                   <Label text="Commits" />
-                  <ScrollPane fx:id="commitsScrollPane" prefHeight="250.0" prefWidth="100.0" VBox.vgrow="ALWAYS">
+                  <ScrollPane fx:id="commitsScrollPane" VBox.vgrow="ALWAYS">
                      <content>
-                        <VBox fx:id="commitsVbox" spacing="5.0" />
+                        <VBox fx:id="commitsVbox" spacing="3.0" />
                      </content>
                   </ScrollPane>
                </children>
@@ -116,15 +120,16 @@
       <VBox fx:id="mainContent" alignment="TOP_CENTER" BorderPane.alignment="CENTER">
          <children>
             <Label text="WC" />
-            <ScrollPane fx:id="modifiedFilesView" VBox.vgrow="ALWAYS">
-               <content>
-                  <HBox>
+            <Label fx:id="wooHoo" alignment="TOP_CENTER" />
+            <AnchorPane VBox.vgrow="ALWAYS">
+               <children>
+                  <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="294.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <ListView fx:id="modifiedList" HBox.hgrow="ALWAYS" />
+                        <ListView fx:id="WcInfoList" />
                      </children>
                   </HBox>
-               </content>
-            </ScrollPane>
+               </children>
+            </AnchorPane>
          </children>
       </VBox>
    </center>

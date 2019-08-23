@@ -9,11 +9,29 @@
   <component name="ChangeListManager">
     <list default="true" id="5bcfa559-9148-47de-97a6-088c256a727f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/appManager/Branch.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/appManager/Branch.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/appManager/Commit.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/appManager/Commit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/appManager/Folder.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/appManager/Folder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/appManager/appManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/appManager/appManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/FxMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/FxMain.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FxUi/src/components/main/MAGit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/main/MAGit.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UI/asd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/components/singleBranch/SingleBranchController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/singleBranch/SingleBranchController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/components/singleCommit/SingleCommitController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/singleCommit/SingleCommitController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/components/singleCommit/singleCommit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/singleCommit/singleCommit.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UI/src/Menu/MainMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/Menu/MainMenu.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/Branch.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/Branch.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/Commit$commitComps.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/Commit$commitComps.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/Commit.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/Commit.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/Folder$folderComponents.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/Folder$folderComponents.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/appManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/appManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/FxMain.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/FxMain.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGit.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGitController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGitController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/singleBranch/SingleBranchController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/singleBranch/SingleBranchController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/singleCommit/SingleCommitController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/singleCommit/SingleCommitController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/singleCommit/singleCommit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/singleCommit/singleCommit.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/UI/Menu/MainMenu.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/UI/Menu/MainMenu.class" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -175,7 +193,8 @@
       <workItem from="1566206201509" duration="17880000" />
       <workItem from="1566238887855" duration="15313000" />
       <workItem from="1566324382878" duration="10781000" />
-      <workItem from="1566407866851" duration="21808000" />
+      <workItem from="1566407866851" duration="27658000" />
+      <workItem from="1566553063845" duration="25020000" />
     </task>
     <servers />
   </component>
@@ -196,7 +215,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
@@ -212,7 +233,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/UI/src/Menu/MainMenu.java</url>
-          <line>197</line>
+          <line>198</line>
           <option name="timeStamp" value="341" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
@@ -222,11 +243,5 @@
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="Application">
-        <watch expression="modifiedList.getChildren()" language="JAVA" />
-        <watch expression="modifiedList.getItems().size()" language="JAVA" />
-      </configuration>
-    </watches-manager>
   </component>
 </project>

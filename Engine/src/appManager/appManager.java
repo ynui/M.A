@@ -8,14 +8,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.*;
 
 import static appManager.Commit.getHeadCommitRootFolderSha1;
-import static appManager.Commit.getHeadCommitSha1;
 import static appManager.ZipHandler.unzipFolderToCompList;
 import static appManager.ZipHandler.zipFile;
 
@@ -136,7 +132,7 @@ public class appManager {
         }
     }
 
-    private Folder.folderComponents stringToFolComponents(List<String> compList) {
+    public static Folder.folderComponents stringToFolComponents(List<String> compList) {
         Folder.folderComponents out = new Folder.folderComponents(compList.get(0), compList.get(1), compList.get(2), compList.get(4), compList.get(3));
         return out;
     }
@@ -175,7 +171,7 @@ public class appManager {
             fw.close();
             return new File(PathConsts.TEMP_FOLDER() + "/" + name + ".txt");
         } catch (Exception e) {
-            throw new UnsupportedOperationException("Error eriting file.\nContent:\n"+toWrite+"\nName:\n" + name);
+            throw new UnsupportedOperationException("Error writing file.\nContent:\n" + toWrite + "\nName:\n" + name);
         }
     }
 
@@ -217,7 +213,7 @@ public class appManager {
         return out;
     }
 
-    private static boolean isEmptyFolder(File f) {
+    public static boolean isEmptyFolder(File f) {
         if (f.isDirectory()) {
             File[] listOfFiles = f.listFiles();
             return listOfFiles == null || listOfFiles.length == 0;
@@ -257,7 +253,7 @@ public class appManager {
         Branch.createNewBranch(name);
     }
 
-    public void deleteBranch(String name) {
+    public void deleteBranch(String name) throws Exception {
         Branch.deleteBranch(name);
     }
 
@@ -265,34 +261,37 @@ public class appManager {
         return Branch.allBranchesToList();
     }
 
-    public static void deleteFileFromFolder(String path, String name) {
+    public static void deleteFileFromFolder(String path, String name) throws IOException {
         File f = findFileInFolderByName(path, name);
-        if (f.exists())
-            try {
+        try {
+            if (f.exists())
                 Files.delete(f.toPath());
-            } catch (IOException e) {
-                e.getMessage();
-            }
+        } catch (FileSystemException e) {
+            throw new FileSystemException(e.getMessage() + "\nDelete this repository manually and try again");
+        }
     }
 
-    public void makeCheckOut(String branchName) {
+    public void makeCheckOut(String branchName) throws FileSystemException {
         if (!fileExistsInFolder(PathConsts.BRANCHES_FOLDER(), branchName))
             throw new UnsupportedOperationException(branchName + " does not exist!");
         String commitSha1 = Branch.getCommitSha1ByBranchName(branchName);
         String folderToDeploySha1 = Commit.getCommitRootFolderSha1(commitSha1);
         deleteAllFilesFromFolder(workingPath);
+        //if(!isEmptyFolder(workingPath.toFile())) throw new UnsupportedOperationException("Could not delete the content in '"+ workingPath+"'\nPlease delete manually and try again");
         deployFolder(folderToDeploySha1, workingPath);
         Branch.changeActiveBranch(branchName);
     }
 
-    private void deleteAllFilesFromFolder(Path path) {
+    private void deleteAllFilesFromFolder(Path path) throws FileSystemException {
         List<File> files = getFiles(path);
         for (File f : files) {
             if (f.isDirectory())
                 deleteAllFilesFromFolder(Paths.get(f.getAbsolutePath()));
             try {
                 Files.delete(f.toPath());
-            } catch (IOException e) {
+            } catch (FileSystemException e) {
+                throw new FileSystemException(e.getMessage() + "\nDelete this repository manually and try again");
+            } catch (Exception e) {
                 e.getMessage();
             }
         }
@@ -318,9 +317,12 @@ public class appManager {
         }
     }
 
-    public List<String> showHeadCommitRep() {
-        String headFolderRepSha1 = getHeadCommitRootFolderSha1();
-        return unzipFolderToCompList(headFolderRepSha1, PathConsts.OBJECTS_FOLDER());
+    public List<String> getCommitRep(String sha1) {
+        return unzipFolderToCompList(sha1, PathConsts.OBJECTS_FOLDER());
+    }
+
+    public List<String> getHeadCommitRep() {
+        return getCommitRep(getHeadCommitRootFolderSha1());
     }
 
     public void manuallyChangeBranch(String sha1) {
@@ -356,7 +358,7 @@ public class appManager {
         return false;
     }
 
-    public void deleteRepository(String location) {
+    public void deleteRepository(String location) throws IOException {
         deleteAllFilesFromFolder(Paths.get(location));
         deleteAllFilesFromFolder(Paths.get(location + "/.magit"));
         deleteFileFromFolder(location, ".magit");

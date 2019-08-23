@@ -112,7 +112,7 @@ public class Branch {
         return false;
     }
 
-    public static void deleteBranch(String name) {
+    public static void deleteBranch(String name) throws Exception {
         List<Branch> allBranches = allBranchesToList();
         for (Branch b : allBranches) {
             if (b.name.equals(name)) {
@@ -161,7 +161,7 @@ public class Branch {
         return name.equals(headBranchName);
     }
 
-    private static List<String> getCommitComponents(String commitSha1) {
+    public static List<String> getCommitComponents(String commitSha1) {
         return unzipFolderToCompList(commitSha1, PathConsts.OBJECTS_FOLDER());
     }
 

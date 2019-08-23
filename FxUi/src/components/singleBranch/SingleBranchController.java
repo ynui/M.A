@@ -63,7 +63,8 @@ public class SingleBranchController {
             SingleCommitController singleCommitController = loader.getController();
             singleCommitController.setNoteProp(c.getNote());
             singleCommitController.setAuthorProp("By: " + c.getAuthor());
-            singleCommitController.getNoteLabel().setTooltip(new Tooltip(c.getNote()));
+            singleCommitController.setSha1Prop(c.getSha1());
+            singleCommitController.getCommitBtn().setTooltip(new Tooltip(c.getNote()));
             target.getChildren().add(singleCommit);
         }
     }
@@ -73,6 +74,7 @@ public class SingleBranchController {
         try {
             appManager.manager.makeCheckOut(this.nameProp.getValue());
             MAGitController.mainController.updateUiRepoLabels();
+            MAGitController.mainController.showWcStatus();
         } catch (Exception ex){
             ExceptionHandler.exceptionDialog(ex);
         }

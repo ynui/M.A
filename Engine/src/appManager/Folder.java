@@ -153,6 +153,15 @@ public class Folder {
             this.lastChangeDate = lastChangeDate;
         }
 
+//        public String getSign(){
+//            String out = "";
+//            if(this.type == eType.FOLDER)
+//                out = "() " + this.name;
+//            else
+//                out = this.name;
+//            return out;
+//        }
+
         @Override
         public String toString() {
             String delimiter = "|";

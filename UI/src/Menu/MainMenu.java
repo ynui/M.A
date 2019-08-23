@@ -4,6 +4,7 @@ import appManager.*;
 
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -167,7 +168,7 @@ public class MainMenu {
         this.addMenuItem("4", "Show all comitt's files and historical info", () -> {
             if (appManager.workingPath == null)
                 throw new UnsupportedOperationException("No repository has been loaded yet!");
-            List<String> headFolderRep = manager.showHeadCommitRep();
+            List<String> headFolderRep = manager.getHeadCommitRep();
             System.out.println("Current commit status:\nFile Name | File's Sha1 | Type | Last Changer | Last Change Date");
             headFolderRep.forEach(System.out::println);
         });
@@ -216,7 +217,11 @@ public class MainMenu {
                     System.out.println("This repository is not in \"Clean State\"\nCheckout was not preformed");
                 else {
                     System.out.println("Checking out to " + newBranchName);
-                    manager.makeCheckOut(newBranchName);
+                    try {
+                        manager.makeCheckOut(newBranchName);
+                    } catch (FileSystemException e) {
+                        e.printStackTrace();
+                    }
                     System.out.println("Done!");
                 }
 
@@ -226,7 +231,11 @@ public class MainMenu {
             if (appManager.workingPath == null)
                 throw new UnsupportedOperationException("No repository has been loaded yet!");
             System.out.println("Enter name of a branch to delete:");
-            manager.deleteBranch(scanner.nextLine());
+            try {
+                manager.deleteBranch(scanner.nextLine());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         });
         this.addMenuItem("10", "Choose a new head branch (Checkout)", () -> {
@@ -239,7 +248,11 @@ public class MainMenu {
                     executeCommit();
             System.out.println("Enter the name of the new desired head branch:");
             branchName = scanner.nextLine();
-            manager.makeCheckOut(branchName);
+            try {
+                manager.makeCheckOut(branchName);
+            } catch (FileSystemException e) {
+                e.printStackTrace();
+            }
             System.out.println("Done!");
         });
         this.addMenuItem("11", "Show active branch's history", () -> {
@@ -273,7 +286,11 @@ public class MainMenu {
             System.out.println("Enter new Sha-1 for this branch:");
             manager.manuallyChangeBranch(scanner.nextLine());
             if (askForYesNo(QuestionConsts.ASK_CHECKOUT)) {
-                manager.makeCheckOut(manager.getHeadBranchName());
+                try {
+                    manager.makeCheckOut(manager.getHeadBranchName());
+                } catch (FileSystemException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

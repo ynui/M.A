@@ -28,7 +28,7 @@ public class FxMain extends Application {
 
         // set stage
         primaryStage.setTitle("My Amazing Git!");
-        Scene scene = new Scene(root, 1050, 600);
+        Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.show();
 

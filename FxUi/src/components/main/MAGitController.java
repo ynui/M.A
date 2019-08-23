@@ -1,11 +1,7 @@
 package components.main;
 
 
-import appManager.Branch;
-import appManager.DiffHandler;
-import appManager.XmlRepo;
-import appManager.appManager;
-import common.ExceptionHandler;
+import appManager.*;
 import common.QuestionConsts;
 import components.singleBranch.SingleBranchController;
 import dialogs.newRepoController;
@@ -30,7 +26,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import tasks.deployXmlTask;
 
-import javax.xml.soap.Text;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +35,7 @@ import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
+import static appManager.ZipHandler.unzipFolderToCompList;
 import static common.ExceptionHandler.exceptionDialog;
 import static common.QuestionConsts.askForYesNo;
 
@@ -97,25 +93,23 @@ public class MAGitController {
     private SimpleStringProperty branchNameProp;
     private SimpleBooleanProperty isRepoLoaded;
     private SimpleBooleanProperty isCleanState;
+    private SimpleBooleanProperty wcListOn;
     private List<Branch> branchList;
 
     private Stage primaryStage;
     private appManager manager;
     @FXML
-    private ListView<String> modifiedList;
-    @FXML
-    private ListView<String> deletedList;
-    @FXML
-    private ListView<String> createdList;
-    @FXML
     private ScrollPane modifiedFilesView;
     @FXML
     private VBox mainContent;
+    @FXML
+    private Label wooHoo;
+    @FXML
+    private ListView WcInfoList;
 
     public VBox getBranchesVbox() {
         return branchesVbox;
     }
-
 
 
     public MAGitController() {
@@ -129,17 +123,21 @@ public class MAGitController {
         branchList = new LinkedList<>();
         isRepoLoaded = new SimpleBooleanProperty(false);
         isCleanState = new SimpleBooleanProperty(true);
+        wcListOn = new SimpleBooleanProperty(false);
     }
 
     @FXML
     private void initialize() {
+        wooHoo.setText("Woo Hoo !\nNo local changes!");
         usernameLabel.textProperty().bind(usernameProp);
         repoLocationLabel.textProperty().bind(repoPathProp);
         repoNameLabel.textProperty().bind(repoNameProp);
         branchNameLabel.textProperty().bind(branchNameProp);
         branchActions.disableProperty().bind(isRepoLoaded.not());
         openInExplorerItem.disableProperty().bind(isRepoLoaded.not());
-        modifiedFilesView.visibleProperty().bind(isCleanState.not());
+        WcInfoList.visibleProperty().bind(wcListOn);
+        wooHoo.visibleProperty().bind(isCleanState.and(isRepoLoaded));
+        commitBtn.disableProperty().bind(isCleanState.or(isRepoLoaded.not()));
     }
 
     @FXML
@@ -154,6 +152,7 @@ public class MAGitController {
         stage.setScene(scene);
         stage.showAndWait();
         updateUiRepoLabels();
+        showWcStatus();
     }
 
 
@@ -168,7 +167,7 @@ public class MAGitController {
             getCommitsVbox().getChildren().clear();
             showAllBranches(null);
         } catch (Exception ex) {
-            ExceptionHandler.exceptionDialog(ex);
+            exceptionDialog(ex);
         }
     }
 
@@ -207,15 +206,17 @@ public class MAGitController {
                     if (askForYesNo(QuestionConsts.ASK_XML_OVERRIDE)) {
                         //System.out.println("Loading XML...");
                         manager.deleteRepository(location);
-//                        deployXml(xmlRepo);
                         manager.deployXml(xmlRepo);
+                        updateUiRepoLabels();
                         //System.out.println("Done!");
+
                     } else {
                         alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setHeaderText("XML loading terminated\nmoving to " + Paths.get(location));
                         alert.showAndWait();
                         manager.switchRepo(location);
                         //System.out.println("Done!");
+                        updateUiRepoLabels();
                     }
                 } else {
                     exceptionDialog(new UnsupportedOperationException("the target folder in this XML '" + Paths.get(location) + "' is not supported by MAGit\nOperation terminated"));
@@ -224,12 +225,13 @@ public class MAGitController {
                 //System.out.println("Loading XML...");
 //                deployXml(xmlRepo);
                 manager.deployXml(xmlRepo);
+                updateUiRepoLabels();
                 //System.out.println("Done!");
             } else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setHeaderText("Target location " + Paths.get(xmlRepo.getRepository().getLocation()) + "does not belong to MAGit. Loading terminated.");
             }
-            updateUiRepoLabels();
+            showWcStatus();
         } catch (Exception e) {
             exceptionDialog(e);
         }
@@ -257,6 +259,7 @@ public class MAGitController {
         try {
             manager.switchRepo(f.getAbsolutePath());
             updateUiRepoLabels();
+            showWcStatus();
         } catch (Exception e) {
             exceptionDialog(e);
         }
@@ -299,7 +302,7 @@ public class MAGitController {
             }
             updateUiRepoLabels();
         } catch (Exception ex) {
-            ExceptionHandler.exceptionDialog(ex);
+            exceptionDialog(ex);
         }
     }
 
@@ -308,53 +311,69 @@ public class MAGitController {
         try {
             Desktop.getDesktop().open(new File(String.valueOf(appManager.workingPath)));
         } catch (Exception ex) {
-            ExceptionHandler.exceptionDialog(ex);
+            exceptionDialog(ex);
         }
     }
 
     @FXML
-    private void showWcStatus(ActionEvent actionEvent) {
-        if(appManager.workingPath == null) return;
+    public void showWcStatus() {
+        if (appManager.workingPath == null) return;
         DiffHandler diff = manager.getDiff();
-        if (appManager.isCleanState(diff)){
+        if (appManager.isCleanState(diff)) {
             isCleanState.set(true);
-           showCleanState();
+            showCleanState();
             return;
+        } else {
+            isCleanState.set(false);
+            showNotCleanState(diff);
         }
-        showNotCleanState(diff);
     }
 
     private void showCleanState() {
-        mainContent.getChildren().clear();
-        mainContent.getChildren().add(new Label("Woo Hoo!\nNo Local "))
+        wcListOn.set(false);
     }
 
     private void showNotCleanState(DiffHandler diff) {
-        isCleanState.set(false);
-        modifiedList.getItems().clear();
-        addToModifiedListView(diff.getCreated(),"+ CREATED:");
-        addToModifiedListView(diff.getChanged(),"* CHANGED:");
-        addToModifiedListView(diff.getDeleted(),"- REMOVED:");
-        modifiedList.setPrefHeight(modifiedList.getItems().size() * 24);
+        WcInfoList.getItems().clear();
+        addToModifiedListView(diff.getCreated(), "+ CREATED:");
+        addToModifiedListView(diff.getChanged(), "* CHANGED:");
+        addToModifiedListView(diff.getDeleted(), "- REMOVED:");
     }
 
     private void addToModifiedListView(List<String> lst, String icon) {
-        String chaser =icon+" ";
+        wcListOn.set(true);
+        String chaser = icon + " ";
         List<String> temp = new LinkedList<>();
         temp.addAll(lst);
         temp.replaceAll(string -> chaser.concat(string));
-        modifiedList.getItems().addAll(temp);
+        WcInfoList.getItems().addAll(temp);
     }
 
     @FXML
     private void makeCommit(ActionEvent actionEvent) {
-        TextInputDialog dialog = setNewDialog("Commit", "Commting to "+manager.getHeadBranchName()+"\nEnter note:","");
+        TextInputDialog dialog = setNewDialog("Commit", "Commting to " + manager.getHeadBranchName() + "\nEnter note:", "");
         dialog.showAndWait();
-        if(dialog.getResult() == null) return;
+        if (dialog.getResult() == null) return;
         try {
             manager.createNewCommit(dialog.getResult());
         } catch (IOException e) {
-            ExceptionHandler.exceptionDialog(e);
+            exceptionDialog(e);
+        }
+    }
+
+    public List<String> getCommitRep(String sha1) {
+        return manager.getCommitRep(sha1);
+    }
+
+    public void showCommitRep(String sha1) {
+        wcListOn.set(true);
+        List<String> folderRep = unzipFolderToCompList(sha1, PathConsts.OBJECTS_FOLDER());
+        List<Button> toPrint = new LinkedList<>();
+        WcInfoList.getItems().clear();
+        List<String> prevComps;
+        for (String s : folderRep) {
+            prevComps = appManager.folderRepToList(s);
+            WcInfoList.getItems().add(prevComps);
         }
     }
 }
