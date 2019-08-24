@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -46,7 +47,7 @@
                      <Label text="Active Branch:" GridPane.columnIndex="1" />
                      <Label fx:id="usernameLabel" text="Username" GridPane.columnIndex="2" />
                      <Label fx:id="repoLocationLabel" text="Path to Repo" GridPane.rowIndex="1" />
-                     <Label fx:id="branchNameLabel" text="Branch Name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                     <Label fx:id="headBranchLabel" text="Branch Name" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                      <MenuButton fx:id="repoActions" mnemonicParsing="false" text="Repo Actions" GridPane.rowIndex="2">
                          <items>
                              <MenuItem fx:id="repoLoadXml" mnemonicParsing="false" onAction="#loadXmlRepo" text="Load Repository From Xml" />
@@ -120,12 +121,16 @@
       <VBox fx:id="mainContent" alignment="TOP_CENTER" BorderPane.alignment="CENTER">
          <children>
             <Label text="WC" />
-            <Label fx:id="wooHoo" alignment="TOP_CENTER" />
             <AnchorPane VBox.vgrow="ALWAYS">
                <children>
-                  <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="294.0" AnchorPane.topAnchor="0.0">
+                  <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <ListView fx:id="WcInfoList" />
+                        <ListView fx:id="WcInfoList" minWidth="-Infinity" onMouseClicked="#showFileContent" />
+                        <ScrollPane HBox.hgrow="ALWAYS">
+                           <content>
+                              <Label fx:id="textPlace" />
+                           </content>
+                        </ScrollPane>
                      </children>
                   </HBox>
                </children>

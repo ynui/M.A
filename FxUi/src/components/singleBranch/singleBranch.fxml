@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<Button fx:id="branchBtn" mnemonicParsing="false" onAction="#showBranchCommits" prefHeight="25.0" prefWidth="65.0" text="Button" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.singleBranch.SingleBranchController">
+<Button fx:id="branchBtn" mnemonicParsing="false" onAction="#showBranchCommits" onMouseClicked="#showBranchCommits" prefHeight="25.0" prefWidth="65.0" text="Button" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="components.singleBranch.SingleBranchController">
    <contextMenu>
       <ContextMenu>
         <items>

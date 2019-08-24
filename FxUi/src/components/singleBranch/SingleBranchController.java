@@ -24,6 +24,15 @@ import java.util.List;
 public class SingleBranchController {
 
     SimpleStringProperty nameProp;
+
+    public List<Commit.commitComps> getCommitList() {
+        return commitList;
+    }
+
+    public void setCommitList(List<Commit.commitComps> commitList) {
+        this.commitList = commitList;
+    }
+
     private List<Commit.commitComps> commitList;
     @FXML
     private Button branchBtn;
@@ -52,21 +61,7 @@ public class SingleBranchController {
 
     @FXML
     public void showBranchCommits() throws IOException {
-        VBox target = MAGitController.mainController.getCommitsVbox();
-        target.getChildren().clear();
-        commitList = appManager.manager.branchHistoryToListBySha1(Branch.getCommitSha1ByBranchName(nameProp.getValue()));
-        for (Commit.commitComps c : commitList) {
-            FXMLLoader loader = new FXMLLoader();
-            URL url = getClass().getResource("../singleCommit/singleCommit.fxml");
-            loader.setLocation(url);
-            Node singleCommit = loader.load();
-            SingleCommitController singleCommitController = loader.getController();
-            singleCommitController.setNoteProp(c.getNote());
-            singleCommitController.setAuthorProp("By: " + c.getAuthor());
-            singleCommitController.setSha1Prop(c.getSha1());
-            singleCommitController.getCommitBtn().setTooltip(new Tooltip(c.getNote()));
-            target.getChildren().add(singleCommit);
-        }
+        MAGitController.mainController.showBranchCommits(nameProp.getValue());
     }
 
     @FXML

@@ -8,8 +8,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5bcfa559-9148-47de-97a6-088c256a727f" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/FxUi/src/components/FileView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/appManager/Folder.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/appManager/Folder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/components/main/MAGit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/main/MAGit.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/components/singleBranch/SingleBranchController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/singleBranch/SingleBranchController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/components/singleBranch/singleBranch.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/singleBranch/singleBranch.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/Folder$folderComponents.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/Folder$folderComponents.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGit.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGitController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGitController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/singleBranch/SingleBranchController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/singleBranch/SingleBranchController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/singleBranch/singleBranch.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/singleBranch/singleBranch.fxml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -172,7 +182,10 @@
       <workItem from="1566238887855" duration="15313000" />
       <workItem from="1566324382878" duration="10781000" />
       <workItem from="1566407866851" duration="27658000" />
-      <workItem from="1566553063845" duration="26256000" />
+      <workItem from="1566553063845" duration="30606000" />
+      <workItem from="1566647435519" duration="79000" />
+      <workItem from="1566648278736" duration="871000" />
+      <workItem from="1566649425271" duration="6871000" />
     </task>
     <task id="LOCAL-00001" summary="hi">
       <created>1566587615251</created>
@@ -246,8 +259,8 @@
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
-        <watch expression="WcInfoList.getItems().get(0)" language="JAVA" />
-        <watch expression="WcInfoList.getSelectionModel().getSelectedItem()" language="JAVA" />
+        <watch expression="currBranchBtn.getOnMouseClicked()" language="JAVA" />
+        <watch expression="currBranchBtn." language="JAVA" />
       </configuration>
     </watches-manager>
   </component>

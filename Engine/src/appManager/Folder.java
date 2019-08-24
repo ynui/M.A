@@ -171,6 +171,14 @@ public class Folder {
                     this.lastChangerName + delimiter +
                     this.lastChangeDate);
         }
+
+        public String toString2() {
+            String out = "";
+            if (this.type.equals("FOLDER"))
+                out += "||| ";
+            out += this.name;
+            return out;
+        }
     }
 
 }

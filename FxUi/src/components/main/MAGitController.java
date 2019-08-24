@@ -3,7 +3,9 @@ package components.main;
 
 import appManager.*;
 import common.QuestionConsts;
+import components.FileView;
 import components.singleBranch.SingleBranchController;
+import components.singleCommit.SingleCommitController;
 import dialogs.newRepoController;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -35,6 +37,7 @@ import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
 
+import static appManager.ZipHandler.unzipFileToString;
 import static appManager.ZipHandler.unzipFolderToCompList;
 import static common.ExceptionHandler.exceptionDialog;
 import static common.QuestionConsts.askForYesNo;
@@ -48,7 +51,7 @@ public class MAGitController {
     @FXML
     private Label repoLocationLabel;
     @FXML
-    private Label branchNameLabel;
+    private Label headBranchLabel;
     @FXML
     private MenuButton repoActions;
     @FXML
@@ -93,7 +96,6 @@ public class MAGitController {
     private SimpleStringProperty branchNameProp;
     private SimpleBooleanProperty isRepoLoaded;
     private SimpleBooleanProperty isCleanState;
-    private SimpleBooleanProperty wcListOn;
     private List<Branch> branchList;
 
     private Stage primaryStage;
@@ -103,9 +105,29 @@ public class MAGitController {
     @FXML
     private VBox mainContent;
     @FXML
-    private Label wooHoo;
-    @FXML
     private ListView WcInfoList;
+    @FXML
+    private Label textPlace;
+
+    public void showBranchCommits(String branchName) throws IOException {
+        SingleBranchController b = new SingleBranchController();
+        VBox target = MAGitController.mainController.getCommitsVbox();
+        target.getChildren().clear();
+        b.setCommitList(appManager.manager.branchHistoryToListBySha1(Branch.getCommitSha1ByBranchName(branchName)));
+        for (Commit.commitComps c : b.getCommitList()) {
+            FXMLLoader loader = new FXMLLoader();
+            URL url = getClass().getResource("../singleCommit/singleCommit.fxml");
+            loader.setLocation(url);
+            Node singleCommit = loader.load();
+            SingleCommitController singleCommitController = loader.getController();
+            singleCommitController.setNoteProp(c.getNote());
+            singleCommitController.setAuthorProp("By: " + c.getAuthor());
+            singleCommitController.setSha1Prop(c.getSha1());
+            singleCommitController.getCommitBtn().setTooltip(new Tooltip(c.getNote()));
+            target.getChildren().add(singleCommit);
+        }
+    }
+
 
     public VBox getBranchesVbox() {
         return branchesVbox;
@@ -123,20 +145,17 @@ public class MAGitController {
         branchList = new LinkedList<>();
         isRepoLoaded = new SimpleBooleanProperty(false);
         isCleanState = new SimpleBooleanProperty(true);
-        wcListOn = new SimpleBooleanProperty(false);
     }
 
     @FXML
     private void initialize() {
-        wooHoo.setText("Woo Hoo !\nNo local changes!");
         usernameLabel.textProperty().bind(usernameProp);
         repoLocationLabel.textProperty().bind(repoPathProp);
         repoNameLabel.textProperty().bind(repoNameProp);
-        branchNameLabel.textProperty().bind(branchNameProp);
+        headBranchLabel.textProperty().bind(branchNameProp);
         branchActions.disableProperty().bind(isRepoLoaded.not());
         openInExplorerItem.disableProperty().bind(isRepoLoaded.not());
-        WcInfoList.visibleProperty().bind(wcListOn);
-        wooHoo.visibleProperty().bind(isCleanState.and(isRepoLoaded));
+        //WcInfoList.visibleProperty().bind(wcListOn);
         commitBtn.disableProperty().bind(isCleanState.or(isRepoLoaded.not()));
     }
 
@@ -329,13 +348,13 @@ public class MAGitController {
         }
     }
 
-
-    
     private void showCleanState() {
-        wcListOn.set(false);
+        textPlace.setText("Woo Hoo !\nNo local changes");
+        WcInfoList.getItems().clear();
     }
 
     private void showNotCleanState(DiffHandler diff) {
+        textPlace.setText("This repository is dirty...\nThere are local changes");
         WcInfoList.getItems().clear();
         addToModifiedListView(diff.getCreated(), "+ CREATED:");
         addToModifiedListView(diff.getChanged(), "* CHANGED:");
@@ -343,7 +362,6 @@ public class MAGitController {
     }
 
     private void addToModifiedListView(List<String> lst, String icon) {
-        wcListOn.set(true);
         String chaser = icon + " ";
         List<String> temp = new LinkedList<>();
         temp.addAll(lst);
@@ -352,8 +370,8 @@ public class MAGitController {
     }
 
     @FXML
-    private void makeCommit(ActionEvent actionEvent) {
-        TextInputDialog dialog = setNewDialog("Commit", "Commting to " + manager.getHeadBranchName() + "\nEnter note:", "");
+    private void makeCommit(ActionEvent actionEvent) throws IOException {
+        TextInputDialog dialog = setNewDialog("Commit", "Committing to " + manager.getHeadBranchName() + "\nEnter note:", "");
         dialog.showAndWait();
         if (dialog.getResult() == null) return;
         try {
@@ -361,6 +379,21 @@ public class MAGitController {
         } catch (IOException e) {
             exceptionDialog(e);
         }
+        showBranchCommits(branchNameProp.getValue());
+        showWcStatus();
+    }
+
+    private void updateCommitsList() {
+        Node currBranchBtn = getHeadBranchBtn();
+        currBranchBtn.getOnMouseClicked();
+    }
+
+    private Node getHeadBranchBtn() {
+        for (Node n : branchesVbox.getChildren())
+            if (n.toString().endsWith("'" + this.branchNameProp.getValue() + "'")) {
+                return n;
+            }
+        return null;
     }
 
     public List<String> getCommitRep(String sha1) {
@@ -368,14 +401,27 @@ public class MAGitController {
     }
 
     public void showCommitRep(String sha1) {
-        wcListOn.set(true);
         List<String> folderRep = unzipFolderToCompList(sha1, PathConsts.OBJECTS_FOLDER());
-        List<Button> toPrint = new LinkedList<>();
         WcInfoList.getItems().clear();
         List<String> prevComps;
         for (String s : folderRep) {
             prevComps = appManager.folderRepToList(s);
-            WcInfoList.getItems().add(prevComps);
+            WcInfoList.getItems().add(new FileView(prevComps));
+        }
+    }
+
+    @FXML
+    private void showFileContent() {
+        if (WcInfoList.getSelectionModel().getSelectedItem() instanceof FileView) {
+            FileView fileView = (FileView) WcInfoList.getSelectionModel().getSelectedItem();
+            Folder.folderComponents folderRep = fileView.getCompList();
+            if (folderRep.getType().equals("FOLDER")) {
+                showCommitRep(folderRep.getSha1());
+                return;
+            }
+            String sha1 = folderRep.getSha1();
+            File f = appManager.findFileInFolderByName(PathConsts.OBJECTS_FOLDER(), sha1);
+            textPlace.setText(unzipFileToString(f));
         }
     }
 }
