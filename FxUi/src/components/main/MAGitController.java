@@ -2,6 +2,7 @@ package components.main;
 
 
 import appManager.*;
+import common.ExceptionHandler;
 import common.QuestionConsts;
 import components.FileView;
 import components.singleBranch.SingleBranchController;
@@ -9,6 +10,7 @@ import components.singleCommit.SingleCommitController;
 import dialogs.newRepoController;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -39,7 +41,7 @@ import java.util.List;
 
 import static appManager.ZipHandler.unzipFileToString;
 import static appManager.ZipHandler.unzipFolderToCompList;
-import static common.ExceptionHandler.exceptionDialog;
+import static common.ExceptionHandler.showExceptionDialog;
 import static common.QuestionConsts.askForYesNo;
 
 public class MAGitController {
@@ -97,6 +99,7 @@ public class MAGitController {
     private SimpleBooleanProperty isRepoLoaded;
     private SimpleBooleanProperty isCleanState;
     private List<Branch> branchList;
+    private Tooltip repoLocationTooltip;
 
     private Stage primaryStage;
     private appManager manager;
@@ -145,18 +148,22 @@ public class MAGitController {
         branchList = new LinkedList<>();
         isRepoLoaded = new SimpleBooleanProperty(false);
         isCleanState = new SimpleBooleanProperty(true);
+        repoLocationTooltip = new Tooltip();
     }
 
     @FXML
     private void initialize() {
         usernameLabel.textProperty().bind(usernameProp);
         repoLocationLabel.textProperty().bind(repoPathProp);
+        repoLocationTooltip.textProperty().bind(repoPathProp);
         repoNameLabel.textProperty().bind(repoNameProp);
         headBranchLabel.textProperty().bind(branchNameProp);
         branchActions.disableProperty().bind(isRepoLoaded.not());
         openInExplorerItem.disableProperty().bind(isRepoLoaded.not());
-        //WcInfoList.visibleProperty().bind(wcListOn);
         commitBtn.disableProperty().bind(isCleanState.or(isRepoLoaded.not()));
+        repoLocationLabel.setTooltip(repoLocationTooltip);
+
+
     }
 
     @FXML
@@ -186,7 +193,7 @@ public class MAGitController {
             getCommitsVbox().getChildren().clear();
             showAllBranches(null);
         } catch (Exception ex) {
-            exceptionDialog(ex);
+            showExceptionDialog(ex);
         }
     }
 
@@ -238,7 +245,7 @@ public class MAGitController {
                         updateUiRepoLabels();
                     }
                 } else {
-                    exceptionDialog(new UnsupportedOperationException("the target folder in this XML '" + Paths.get(location) + "' is not supported by MAGit\nOperation terminated"));
+                    showExceptionDialog(new UnsupportedOperationException("the target folder in this XML '" + Paths.get(location) + "' is not supported by MAGit\nOperation terminated"));
                 }
             } else if (Files.notExists(Paths.get(xmlRepo.getRepository().getLocation()))) {
                 //System.out.println("Loading XML...");
@@ -252,7 +259,7 @@ public class MAGitController {
             }
             showWcStatus();
         } catch (Exception e) {
-            exceptionDialog(e);
+            showExceptionDialog(e);
         }
     }
 
@@ -280,7 +287,7 @@ public class MAGitController {
             updateUiRepoLabels();
             showWcStatus();
         } catch (Exception e) {
-            exceptionDialog(e);
+            showExceptionDialog(e);
         }
     }
 
@@ -321,7 +328,7 @@ public class MAGitController {
             }
             updateUiRepoLabels();
         } catch (Exception ex) {
-            exceptionDialog(ex);
+            showExceptionDialog(ex);
         }
     }
 
@@ -330,7 +337,7 @@ public class MAGitController {
         try {
             Desktop.getDesktop().open(new File(String.valueOf(appManager.workingPath)));
         } catch (Exception ex) {
-            exceptionDialog(ex);
+            showExceptionDialog(ex);
         }
     }
 
@@ -341,7 +348,6 @@ public class MAGitController {
         if (appManager.isCleanState(diff)) {
             isCleanState.set(true);
             showCleanState();
-            return;
         } else {
             isCleanState.set(false);
             showNotCleanState(diff);
@@ -376,25 +382,20 @@ public class MAGitController {
         if (dialog.getResult() == null) return;
         try {
             manager.createNewCommit(dialog.getResult());
-        } catch (IOException e) {
-            exceptionDialog(e);
+        } catch (Exception e) {
+            showExceptionDialog(e);
         }
         showBranchCommits(branchNameProp.getValue());
         showWcStatus();
     }
 
-    private void updateCommitsList() {
-        Node currBranchBtn = getHeadBranchBtn();
-        currBranchBtn.getOnMouseClicked();
-    }
-
-    private Node getHeadBranchBtn() {
-        for (Node n : branchesVbox.getChildren())
-            if (n.toString().endsWith("'" + this.branchNameProp.getValue() + "'")) {
-                return n;
-            }
-        return null;
-    }
+//    private Node getHeadBranchBtn() {
+//        for (Node n : branchesVbox.getChildren())
+//            if (n.toString().endsWith("'" + this.branchNameProp.getValue() + "'")) {
+//                return n;
+//            }
+//        return null;
+//    }
 
     public List<String> getCommitRep(String sha1) {
         return manager.getCommitRep(sha1);
@@ -422,6 +423,20 @@ public class MAGitController {
             String sha1 = folderRep.getSha1();
             File f = appManager.findFileInFolderByName(PathConsts.OBJECTS_FOLDER(), sha1);
             textPlace.setText(unzipFileToString(f));
+        }
+    }
+
+    public void branchCheckout(String branchName) throws IOException {
+        DiffHandler diff = manager.getDiff();
+        if (!appManager.isCleanState(diff))
+            if (askForYesNo(QuestionConsts.ASK_COMMIT))
+                makeCommit(null);
+        try {
+            manager.makeCheckOut(branchName);
+            mainController.updateUiRepoLabels();
+            mainController.showWcStatus();
+        } catch (Exception ex){
+            ExceptionHandler.showExceptionDialog(ex);
         }
     }
 }

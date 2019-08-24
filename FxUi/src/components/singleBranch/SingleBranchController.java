@@ -1,23 +1,16 @@
 package components.singleBranch;
 
-import appManager.Branch;
 import appManager.Commit;
 import appManager.appManager;
 import common.ExceptionHandler;
 import components.main.MAGitController;
-import components.singleCommit.SingleCommitController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextInputDialog;
-import javafx.scene.control.Tooltip;
-import javafx.scene.layout.VBox;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -67,11 +60,9 @@ public class SingleBranchController {
     @FXML
     private void branchCheckout(ActionEvent actionEvent) {
         try {
-            appManager.manager.makeCheckOut(this.nameProp.getValue());
-            MAGitController.mainController.updateUiRepoLabels();
-            MAGitController.mainController.showWcStatus();
-        } catch (Exception ex){
-            ExceptionHandler.exceptionDialog(ex);
+            MAGitController.mainController.branchCheckout(this.nameProp.getValue());
+        } catch (IOException e) {
+            ExceptionHandler.showExceptionDialog(e);
         }
     }
 
@@ -81,7 +72,7 @@ public class SingleBranchController {
         appManager.manager.deleteBranch(this.nameProp.getValue());
         MAGitController.mainController.updateUiRepoLabels();
         } catch (Exception ex){
-            ExceptionHandler.exceptionDialog(ex);
+            ExceptionHandler.showExceptionDialog(ex);
         }
     }
 
@@ -92,7 +83,7 @@ public class SingleBranchController {
         try{
         appManager.manager.manuallyChangeBranch(dialog.getResult());
         } catch (Exception ex){
-            ExceptionHandler.exceptionDialog(ex);
+            ExceptionHandler.showExceptionDialog(ex);
         }
     }
 }

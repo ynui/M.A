@@ -28,7 +28,7 @@ public class ExceptionHandler extends Throwable {
         return;
     }
 
-    public static void exceptionDialog(Exception ex){
+    public static void showExceptionDialog(Exception ex){
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("ALERT");
         alert.setHeaderText(ex.getMessage());

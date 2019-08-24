@@ -2,24 +2,47 @@
 <project version="4">
   <component name="ArtifactsWorkspaceSettings">
     <artifacts-to-build>
-      <artifact name="Engine:jar" />
-      <artifact name="UI:jar" />
+      <artifact name="FxUi:jar" />
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5bcfa559-9148-47de-97a6-088c256a727f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/FxUi/src/components/FileView.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/FxUi_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FxUi/src/META-INF/MANIFEST.MF" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/Engine_jar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/UI_jar.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/appManager/Folder.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/appManager/Folder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FxUi/src/components/main/MAGit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/main/MAGit.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/common/ExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/common/ExceptionHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FxUi/src/components/singleBranch/SingleBranchController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/singleBranch/SingleBranchController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FxUi/src/components/singleBranch/singleBranch.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/singleBranch/singleBranch.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/Folder$folderComponents.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/Folder$folderComponents.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGit.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/dialogs/newRepoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/dialogs/newRepoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/Engine_jar/Engine.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/UI_jar/UI.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/META-INF/Engine.kotlin_module" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/META-INF/FxUi.kotlin_module" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/common/ExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/common/ExceptionHandler.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGitController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGitController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/singleBranch/SingleBranchController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/singleBranch/SingleBranchController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/singleBranch/singleBranch.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/singleBranch/singleBranch.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/dialogs/newRepoController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/dialogs/newRepoController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/UI/META-INF/MANIFEST.MF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/UI/Main/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/UI/Menu/MainMenu.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/UI/Menu/MenuItem.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/UI/Menu/QuestionConsts.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/com/github/difflib/unifieddiff/jsqlparser_patch_1.diff" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/5A.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/5B.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/issue10_base.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/issue10_patch.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/issue11_1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/issue11_2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/issue15_1.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/issue15_2.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/large_dataset1.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/one_delta_test_original.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/one_delta_test_revised.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/original.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/revised.txt" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -71,26 +94,15 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="project.structure.last.edited" value="Global Libraries" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="copyright" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src" />
-      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src\main" />
-      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\resources" />
-      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\JavaFxUI" />
-      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\JavaFxUI\src" />
-    </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="UI" />
       <recent name="" />
-    </key>
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="common" />
-      <recent name="components.main" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src\components\singleCommit" />
@@ -98,6 +110,17 @@
       <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src" />
       <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi" />
       <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\resources\css" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="common" />
+      <recent name="components.main" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src" />
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src\main" />
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\resources" />
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\JavaFxUI" />
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\JavaFxUI\src" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -185,7 +208,8 @@
       <workItem from="1566553063845" duration="30606000" />
       <workItem from="1566647435519" duration="79000" />
       <workItem from="1566648278736" duration="871000" />
-      <workItem from="1566649425271" duration="6871000" />
+      <workItem from="1566649425271" duration="8618000" />
+      <workItem from="1566668884364" duration="5560000" />
     </task>
     <task id="LOCAL-00001" summary="hi">
       <created>1566587615251</created>
@@ -194,7 +218,14 @@
       <option name="project" value="LOCAL" />
       <updated>1566587615251</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="branch creation from MAGitController">
+      <created>1566656888786</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1566656888786</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TodoView">
@@ -235,7 +266,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="hi" />
-    <option name="LAST_COMMIT_MESSAGE" value="hi" />
+    <MESSAGE value="branch creation from MAGitController" />
+    <option name="LAST_COMMIT_MESSAGE" value="branch creation from MAGitController" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -251,16 +283,16 @@
           <option name="timeStamp" value="341" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Engine/src/tasks/deployXmlTask.java</url>
-          <line>28</line>
-          <option name="timeStamp" value="349" />
+          <url>file://$PROJECT_DIR$/Engine/src/appManager/Branch.java</url>
+          <line>119</line>
+          <option name="timeStamp" value="356" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
-        <watch expression="currBranchBtn.getOnMouseClicked()" language="JAVA" />
-        <watch expression="currBranchBtn." language="JAVA" />
+        <watch expression="writer.toString()" language="JAVA" />
+        <watch expression="WcInfoList.getRoot().getChildren()" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>
