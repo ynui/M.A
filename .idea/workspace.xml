@@ -7,42 +7,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5bcfa559-9148-47de-97a6-088c256a727f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/FxUi_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FxUi/src/META-INF/MANIFEST.MF" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/Engine_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/UI_jar.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FxUi/src/common/ExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/common/ExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/components/main/MAGit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/main/MAGit.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FxUi/src/components/singleBranch/SingleBranchController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/singleBranch/SingleBranchController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FxUi/src/dialogs/newRepoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/dialogs/newRepoController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/Engine_jar/Engine.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/UI_jar/UI.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/META-INF/Engine.kotlin_module" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FxUi/META-INF/FxUi.kotlin_module" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FxUi/common/ExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/common/ExceptionHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/components/singleCommit/SingleCommitController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/singleCommit/SingleCommitController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGit.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGitController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGitController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/singleBranch/SingleBranchController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/singleBranch/SingleBranchController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FxUi/dialogs/newRepoController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/dialogs/newRepoController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/UI/META-INF/MANIFEST.MF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/UI/Main/Main.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/UI/Menu/MainMenu.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/UI/Menu/MenuItem.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/UI/Menu/QuestionConsts.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/com/github/difflib/unifieddiff/jsqlparser_patch_1.diff" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/5A.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/5B.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/issue10_base.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/issue10_patch.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/issue11_1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/issue11_2.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/issue15_1.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/issue15_2.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/large_dataset1.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/one_delta_test_original.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/one_delta_test_revised.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/original.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/java-diff-utils-master/test/resources/mocks/revised.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/singleCommit/SingleCommitController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/singleCommit/SingleCommitController.class" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -210,6 +181,7 @@
       <workItem from="1566648278736" duration="871000" />
       <workItem from="1566649425271" duration="8618000" />
       <workItem from="1566668884364" duration="5560000" />
+      <workItem from="1566728163366" duration="7397000" />
     </task>
     <task id="LOCAL-00001" summary="hi">
       <created>1566587615251</created>
@@ -291,8 +263,7 @@
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
-        <watch expression="writer.toString()" language="JAVA" />
-        <watch expression="WcInfoList.getRoot().getChildren()" language="JAVA" />
+        <watch expression="WcInfoList.getSelectionModel().getSelectedItem()" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>

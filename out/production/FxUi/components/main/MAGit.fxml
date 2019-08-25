@@ -125,7 +125,7 @@
                <children>
                   <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <ListView fx:id="WcInfoList" minWidth="-Infinity" onMouseClicked="#showFileContent" />
+                        <TreeView fx:id="WcInfoList" minWidth="200.0" onMouseClicked="#showFileContent" prefHeight="200.0" prefWidth="200.0" />
                         <ScrollPane HBox.hgrow="ALWAYS">
                            <content>
                               <Label fx:id="textPlace" />

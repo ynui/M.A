@@ -10,7 +10,6 @@ import components.singleCommit.SingleCommitController;
 import dialogs.newRepoController;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -108,7 +107,7 @@ public class MAGitController {
     @FXML
     private VBox mainContent;
     @FXML
-    private ListView WcInfoList;
+    private TreeView WcInfoList;
     @FXML
     private Label textPlace;
 
@@ -149,6 +148,7 @@ public class MAGitController {
         isRepoLoaded = new SimpleBooleanProperty(false);
         isCleanState = new SimpleBooleanProperty(true);
         repoLocationTooltip = new Tooltip();
+        WcInfoList = new TreeView();
     }
 
     @FXML
@@ -162,7 +162,8 @@ public class MAGitController {
         openInExplorerItem.disableProperty().bind(isRepoLoaded.not());
         commitBtn.disableProperty().bind(isCleanState.or(isRepoLoaded.not()));
         repoLocationLabel.setTooltip(repoLocationTooltip);
-
+        WcInfoList.setRoot(new TreeItem("root"));
+        WcInfoList.setShowRoot(false);
 
     }
 
@@ -356,23 +357,25 @@ public class MAGitController {
 
     private void showCleanState() {
         textPlace.setText("Woo Hoo !\nNo local changes");
-        WcInfoList.getItems().clear();
+        if (WcInfoList.getRoot() != null)
+            WcInfoList.getRoot().getChildren().clear();
     }
 
     private void showNotCleanState(DiffHandler diff) {
         textPlace.setText("This repository is dirty...\nThere are local changes");
-        WcInfoList.getItems().clear();
-        addToModifiedListView(diff.getCreated(), "+ CREATED:");
-        addToModifiedListView(diff.getChanged(), "* CHANGED:");
-        addToModifiedListView(diff.getDeleted(), "- REMOVED:");
+        if (WcInfoList.getRoot() != null)
+            WcInfoList.getRoot().getChildren().clear();
+        addToModifiedListView(diff.getCreated(), "CREATED");
+        addToModifiedListView(diff.getChanged(), "CHANGED");
+        addToModifiedListView(diff.getDeleted(), "REMOVED");
     }
 
     private void addToModifiedListView(List<String> lst, String icon) {
-        String chaser = icon + " ";
-        List<String> temp = new LinkedList<>();
-        temp.addAll(lst);
-        temp.replaceAll(string -> chaser.concat(string));
-        WcInfoList.getItems().addAll(temp);
+        TreeItem root = new TreeItem(icon);
+        for (String s : lst)
+            root.getChildren().add(new TreeItem(s));
+//        root.getChildren().addAll(lst);
+        WcInfoList.getRoot().getChildren().add(root);
     }
 
     @FXML
@@ -401,28 +404,46 @@ public class MAGitController {
         return manager.getCommitRep(sha1);
     }
 
-    public void showCommitRep(String sha1) {
+//    public void showCommitRep(String sha1) {
+//        List<String> folderRep = unzipFolderToCompList(sha1, PathConsts.OBJECTS_FOLDER());
+//        WcInfoList.getRoot().getChildren().clear();
+//        List<String> prevComps;
+//        for (String s : folderRep) {
+//            prevComps = appManager.folderRepToList(s);
+//            WcInfoList.getRoot().getChildren().add(new TreeItem<>(new FileView(prevComps)));
+//        }
+//    }
+
+    public void showCommitRep(String sha1, TreeItem currRoot) {
         List<String> folderRep = unzipFolderToCompList(sha1, PathConsts.OBJECTS_FOLDER());
-        WcInfoList.getItems().clear();
         List<String> prevComps;
         for (String s : folderRep) {
             prevComps = appManager.folderRepToList(s);
-            WcInfoList.getItems().add(new FileView(prevComps));
+            TreeItem newTreeItem = new TreeItem<>(new FileView(prevComps));
+            currRoot.getChildren().add(newTreeItem);
+            if (prevComps.get(2).equals("FOLDER")) {
+                showCommitRep(prevComps.get((1)), newTreeItem);
+            }
         }
+    }
+
+    public TreeView getWcInfoList() {
+        return WcInfoList;
     }
 
     @FXML
     private void showFileContent() {
-        if (WcInfoList.getSelectionModel().getSelectedItem() instanceof FileView) {
-            FileView fileView = (FileView) WcInfoList.getSelectionModel().getSelectedItem();
-            Folder.folderComponents folderRep = fileView.getCompList();
-            if (folderRep.getType().equals("FOLDER")) {
-                showCommitRep(folderRep.getSha1());
-                return;
+        TreeItem item = (TreeItem) WcInfoList.getSelectionModel().getSelectedItem();
+        if (item != null) {
+            if (item.getValue() instanceof FileView) {
+                Folder.folderComponents folderRep = ((FileView) item.getValue()).getCompList();
+                if (folderRep.getType().equals("FOLDER")) {
+                    return;
+                }
+                String sha1 = folderRep.getSha1();
+                File f = appManager.findFileInFolderByName(PathConsts.OBJECTS_FOLDER(), sha1);
+                textPlace.setText(unzipFileToString(f));
             }
-            String sha1 = folderRep.getSha1();
-            File f = appManager.findFileInFolderByName(PathConsts.OBJECTS_FOLDER(), sha1);
-            textPlace.setText(unzipFileToString(f));
         }
     }
 
@@ -435,7 +456,7 @@ public class MAGitController {
             manager.makeCheckOut(branchName);
             mainController.updateUiRepoLabels();
             mainController.showWcStatus();
-        } catch (Exception ex){
+        } catch (Exception ex) {
             ExceptionHandler.showExceptionDialog(ex);
         }
     }

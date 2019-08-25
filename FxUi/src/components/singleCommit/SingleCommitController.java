@@ -88,6 +88,7 @@ public class SingleCommitController {
     private void showCommitFiles(ActionEvent actionEvent) {
         //you have commit sha1 now need to get the folderrep of it and send it to showcommitrep
         List<String> commitComponents = getCommitComponents(sha1Prop.getValue());
-        mainController.showCommitRep(commitComponents.get(0));
+        mainController.getWcInfoList().getRoot().getChildren().clear();
+        mainController.showCommitRep(commitComponents.get(0),mainController.getWcInfoList().getRoot());
     }
 }
