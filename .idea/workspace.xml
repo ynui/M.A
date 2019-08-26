@@ -7,7 +7,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5bcfa559-9148-47de-97a6-088c256a727f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -176,7 +175,7 @@
       <workItem from="1566648278736" duration="871000" />
       <workItem from="1566649425271" duration="8618000" />
       <workItem from="1566668884364" duration="5560000" />
-      <workItem from="1566728163366" duration="27964000" />
+      <workItem from="1566728163366" duration="28050000" />
     </task>
     <task id="LOCAL-00001" summary="hi">
       <created>1566587615251</created>
@@ -231,17 +230,6 @@
         <entry key="MAIN">
           <value>
             <State>
-              <option name="FILTERS">
-                <map>
-                  <entry key="branch">
-                    <value>
-                      <list>
-                        <option value="master" />
-                      </list>
-                    </value>
-                  </entry>
-                </map>
-              </option>
               <option name="COLUMN_ORDER" />
             </State>
           </value>
@@ -300,7 +288,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java</url>
-          <line>174</line>
+          <line>183</line>
           <option name="timeStamp" value="386" />
         </line-breakpoint>
       </breakpoints>
