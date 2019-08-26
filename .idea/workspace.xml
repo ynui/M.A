@@ -7,21 +7,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5bcfa559-9148-47de-97a6-088c256a727f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/FxUi/src/common/Consts.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FxUi/src/resources/dot.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FxUi/src/resources/file.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FxUi/src/resources/folder.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FxUi/src/resources/minus.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FxUi/src/resources/plus.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/appManager/Folder.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/appManager/Folder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FxUi/src/components/FileView.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/FileView.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FxUi/src/components/main/MAGit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/main/MAGit.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/Folder$folderComponents.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/Folder$folderComponents.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/FileView.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/FileView.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGit.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGitController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGitController.class" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -189,7 +175,7 @@
       <workItem from="1566648278736" duration="871000" />
       <workItem from="1566649425271" duration="8618000" />
       <workItem from="1566668884364" duration="5560000" />
-      <workItem from="1566728163366" duration="27716000" />
+      <workItem from="1566728163366" duration="28023000" />
     </task>
     <task id="LOCAL-00001" summary="hi">
       <created>1566587615251</created>
@@ -205,7 +191,14 @@
       <option name="project" value="LOCAL" />
       <updated>1566656888786</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Ui almost done -&gt; need to fix TreeView">
+      <created>1566823573062</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1566823573062</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TodoView">
@@ -243,11 +236,37 @@
         </entry>
       </map>
     </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="master" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="test" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="HEAD" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="hi" />
     <MESSAGE value="branch creation from MAGitController" />
-    <option name="LAST_COMMIT_MESSAGE" value="branch creation from MAGitController" />
+    <MESSAGE value="Ui almost done -&gt; need to fix TreeView" />
+    <option name="LAST_COMMIT_MESSAGE" value="Ui almost done -&gt; need to fix TreeView" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -269,7 +288,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java</url>
-          <line>172</line>
+          <line>178</line>
           <option name="timeStamp" value="386" />
         </line-breakpoint>
       </breakpoints>
