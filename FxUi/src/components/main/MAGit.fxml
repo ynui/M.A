@@ -125,7 +125,11 @@
                <children>
                   <HBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <TreeView fx:id="WcInfoList" minWidth="200.0" onMouseClicked="#showFileContent" prefHeight="200.0" prefWidth="200.0" />
+                        <TreeView fx:id="WcInfoList" depthTest="ENABLE" maxWidth="-Infinity" minWidth="-Infinity" onMouseClicked="#showFileContent" showRoot="false" snapToPixel="false">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </TreeView>
                         <ScrollPane HBox.hgrow="ALWAYS">
                            <content>
                               <Label fx:id="textPlace" />

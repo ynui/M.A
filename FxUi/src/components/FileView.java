@@ -17,10 +17,6 @@ public class FileView {
 
     @Override
     public String toString() {
-        String out = "";
-        if (compList.getType().equals("FOLDER"))
-            out += "||| ";
-        out += compList.getName();
-        return out;
+        return compList.getName();
     }
 }

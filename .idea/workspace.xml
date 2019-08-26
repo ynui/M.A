@@ -7,13 +7,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5bcfa559-9148-47de-97a6-088c256a727f" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/FxUi/src/common/Consts.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FxUi/src/resources/dot.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FxUi/src/resources/file.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FxUi/src/resources/folder.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FxUi/src/resources/minus.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FxUi/src/resources/plus.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/appManager/Folder.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/appManager/Folder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/components/FileView.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/FileView.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FxUi/src/components/main/MAGit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/main/MAGit.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FxUi/src/components/singleCommit/SingleCommitController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/singleCommit/SingleCommitController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/Folder$folderComponents.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/Folder$folderComponents.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/FileView.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/FileView.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGit.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGitController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGitController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/singleCommit/SingleCommitController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/singleCommit/SingleCommitController.class" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -61,7 +69,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/FxUi/src" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/FxUi/src/resources" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -71,27 +79,27 @@
     <property name="settings.editor.selected.configurable" value="copyright" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src\resources" />
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src" />
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src\main" />
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\resources" />
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\JavaFxUI" />
+    </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="UI" />
       <recent name="" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src\components\singleCommit" />
-      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src\components\main" />
-      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src" />
-      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi" />
-      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\resources\css" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="common" />
       <recent name="components.main" />
     </key>
-    <key name="MoveFile.RECENT_KEYS">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src\resources" />
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src\components\singleCommit" />
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src\components\main" />
       <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src" />
-      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src\main" />
-      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\resources" />
-      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\JavaFxUI" />
-      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\JavaFxUI\src" />
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -181,7 +189,7 @@
       <workItem from="1566648278736" duration="871000" />
       <workItem from="1566649425271" duration="8618000" />
       <workItem from="1566668884364" duration="5560000" />
-      <workItem from="1566728163366" duration="7397000" />
+      <workItem from="1566728163366" duration="27716000" />
     </task>
     <task id="LOCAL-00001" summary="hi">
       <created>1566587615251</created>
@@ -259,11 +267,17 @@
           <line>119</line>
           <option name="timeStamp" value="356" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java</url>
+          <line>172</line>
+          <option name="timeStamp" value="386" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
-        <watch expression="WcInfoList.getSelectionModel().getSelectedItem()" language="JAVA" />
+        <watch expression="WcInfoList.getRoot().getChildren()" language="JAVA" />
+        <watch expression="updateChanges.size()" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>

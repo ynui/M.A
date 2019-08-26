@@ -2,6 +2,7 @@ package components.main;
 
 
 import appManager.*;
+import common.Consts;
 import common.ExceptionHandler;
 import common.QuestionConsts;
 import components.FileView;
@@ -22,6 +23,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -163,8 +166,6 @@ public class MAGitController {
         commitBtn.disableProperty().bind(isCleanState.or(isRepoLoaded.not()));
         repoLocationLabel.setTooltip(repoLocationTooltip);
         WcInfoList.setRoot(new TreeItem("root"));
-        WcInfoList.setShowRoot(false);
-
     }
 
     @FXML
@@ -227,10 +228,7 @@ public class MAGitController {
             xmlRepo.checkIfLegalRepo(xmlRepo);
             if (Files.exists(Paths.get(location))) {
                 if (manager.isMagitRepo(location)) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setHeaderText("Target location: " + Paths.get(location));
-                    alert.showAndWait();
-                    if (askForYesNo(QuestionConsts.ASK_XML_OVERRIDE)) {
+                    if (askForYesNo("Target location: " + Paths.get(location) + "\n" + QuestionConsts.ASK_XML_OVERRIDE)) {
                         //System.out.println("Loading XML...");
                         manager.deleteRepository(location);
                         manager.deployXml(xmlRepo);
@@ -238,11 +236,10 @@ public class MAGitController {
                         //System.out.println("Done!");
 
                     } else {
-                        alert = new Alert(Alert.AlertType.INFORMATION);
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setHeaderText("XML loading terminated\nmoving to " + Paths.get(location));
                         alert.showAndWait();
                         manager.switchRepo(location);
-                        //System.out.println("Done!");
                         updateUiRepoLabels();
                     }
                 } else {
@@ -370,12 +367,41 @@ public class MAGitController {
         addToModifiedListView(diff.getDeleted(), "REMOVED");
     }
 
-    private void addToModifiedListView(List<String> lst, String icon) {
-        TreeItem root = new TreeItem(icon);
-        for (String s : lst)
-            root.getChildren().add(new TreeItem(s));
-//        root.getChildren().addAll(lst);
+    private void addToModifiedListView(List<String> lst, String title) {
+        if (lst.size() == 0) return;
+        TreeItem root = new TreeItem(title);
+        for (String s : lst) {
+            TreeItem newItem = new TreeItem(s, getModificationIcon(title));
+            root.getChildren().add(newItem);
+        }
         WcInfoList.getRoot().getChildren().add(root);
+    }
+
+    private ImageView getModificationIcon(String title) {
+        Image newImage;
+        ImageView outImage;
+        switch (title) {
+            case "CREATED":
+                newImage = new Image(Consts.PLUS_SIGN, 16, 16, true, false);
+                break;
+            case "CHANGED":
+//                newImage = new Image(Consts.DOT_SIGN, 16, 16, true, false);
+                newImage = new Image(getClass().getResourceAsStream(Consts.DOT_SIGN), 16, 16, true, false);
+                break;
+            case "REMOVED":
+                newImage = new Image(Consts.MINUS_SIGN, 16, 16, true, false);
+                break;
+            case "FILE":
+                newImage = new Image(Consts.FILE_ICON, 16, 16, true, false);
+                break;
+            case "FOLDER":
+                newImage = new Image(Consts.FOLDER_ICON, 16, 16, true, false);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + title);
+        }
+        outImage = new ImageView(newImage);
+        return outImage;
     }
 
     @FXML
@@ -415,11 +441,14 @@ public class MAGitController {
 //    }
 
     public void showCommitRep(String sha1, TreeItem currRoot) {
+        ImageView icon;
+        if (sha1.equals(Consts.EMPTY_SHA1)) return;
         List<String> folderRep = unzipFolderToCompList(sha1, PathConsts.OBJECTS_FOLDER());
         List<String> prevComps;
         for (String s : folderRep) {
             prevComps = appManager.folderRepToList(s);
-            TreeItem newTreeItem = new TreeItem<>(new FileView(prevComps));
+            icon = getModificationIcon(prevComps.get(2));
+            TreeItem newTreeItem = new TreeItem<>(new FileView(prevComps), icon);
             currRoot.getChildren().add(newTreeItem);
             if (prevComps.get(2).equals("FOLDER")) {
                 showCommitRep(prevComps.get((1)), newTreeItem);
@@ -460,4 +489,10 @@ public class MAGitController {
             ExceptionHandler.showExceptionDialog(ex);
         }
     }
+
+
+
+
+
+
 }
