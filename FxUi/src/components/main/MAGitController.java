@@ -168,6 +168,8 @@ public class MAGitController {
         WcInfoList.setRoot(new TreeItem("root"));
     }
 
+
+    
     @FXML
     private void initEmptyRepo() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../../dialogs/newRepoDialog.fxml"));
