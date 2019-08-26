@@ -174,6 +174,12 @@ public class MAGitController {
 
     
 
+
+
+
+
+
+    
     @FXML
     private void initEmptyRepo() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../../dialogs/newRepoDialog.fxml"));

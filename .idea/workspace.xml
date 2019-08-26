@@ -175,7 +175,7 @@
       <workItem from="1566648278736" duration="871000" />
       <workItem from="1566649425271" duration="8618000" />
       <workItem from="1566668884364" duration="5560000" />
-      <workItem from="1566728163366" duration="28023000" />
+      <workItem from="1566728163366" duration="28074000" />
     </task>
     <task id="LOCAL-00001" summary="hi">
       <created>1566587615251</created>
@@ -288,7 +288,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java</url>
-          <line>178</line>
+          <line>184</line>
           <option name="timeStamp" value="386" />
         </line-breakpoint>
       </breakpoints>
