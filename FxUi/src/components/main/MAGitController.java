@@ -168,6 +168,16 @@ public class MAGitController {
         WcInfoList.setRoot(new TreeItem("root"));
     }
 
+
+
+
+
+
+
+
+
+
+
     
     @FXML
     private void initEmptyRepo() throws IOException {
