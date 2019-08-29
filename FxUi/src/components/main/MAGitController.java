@@ -183,6 +183,8 @@ public class MAGitController {
         showWcStatus();
     }
 
+
+
     public void updateUiRepoLabels() {
         if (appManager.workingPath == null) return;
         try {

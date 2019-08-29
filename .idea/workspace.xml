@@ -6,10 +6,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5bcfa559-9148-47de-97a6-088c256a727f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java" afterDir="false" />
-    </list>
+    <list default="true" id="5bcfa559-9148-47de-97a6-088c256a727f" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -179,7 +176,7 @@
       <workItem from="1566728163366" duration="27716000" />
       <workItem from="1566984445747" duration="1268000" />
       <workItem from="1567004775754" duration="600000" />
-      <workItem from="1567078184557" duration="1684000" />
+      <workItem from="1567078184557" duration="1796000" />
     </task>
     <task id="LOCAL-00001" summary="hi">
       <created>1566587615251</created>
@@ -209,7 +206,21 @@
       <option name="project" value="LOCAL" />
       <updated>1566985196558</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="z">
+      <created>1567080538307</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1567080538307</updated>
+    </task>
+    <task id="LOCAL-00006" summary="z">
+      <created>1567080615670</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1567080615670</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TodoView">
@@ -252,7 +263,8 @@
     <MESSAGE value="hi" />
     <MESSAGE value="branch creation from MAGitController" />
     <MESSAGE value="Merge branch 'test'&#10;zxc&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;FxUi/src/components/main/MAGitController.java" />
-    <option name="LAST_COMMIT_MESSAGE" value="Merge branch 'test'&#10;zxc&#10;# Conflicts:&#10;#&#9;.idea/workspace.xml&#10;#&#9;FxUi/src/components/main/MAGitController.java" />
+    <MESSAGE value="z" />
+    <option name="LAST_COMMIT_MESSAGE" value="z" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
