@@ -101,6 +101,14 @@ public class Folder {
             this.lastChangerName = username;
         }
 
+        public folderComponents(List<String> stringRep) {
+            this.name = stringRep.get(0);
+            this.sha1 = stringRep.get(1);
+            this.type = eType.valueOf(stringRep.get(2));
+            this.lastChangerName = stringRep.get(3);
+            this.lastChangeDate = stringRep.get(4);
+        }
+
 
         public String getType() {
             return type.toString();

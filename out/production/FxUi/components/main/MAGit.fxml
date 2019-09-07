@@ -111,7 +111,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button fx:id="commitTreeBtn" mnemonicParsing="false" prefHeight="30.0" prefWidth="326.0" text="Commit Tree" />
+            <Button fx:id="commitTreeBtn" mnemonicParsing="false" onAction="#showCommitTree" prefHeight="30.0" prefWidth="326.0" text="Commit Tree" />
             <Button fx:id="commitBtn" mnemonicParsing="false" onAction="#makeCommit" prefHeight="92.0" prefWidth="150.0" text="Commit!" GridPane.columnIndex="4" />
             <Button fx:id="homeBtn" mnemonicParsing="false" onAction="#showWcStatus" prefHeight="30.0" prefWidth="232.0" text="Home" GridPane.columnIndex="2" />
          </children>

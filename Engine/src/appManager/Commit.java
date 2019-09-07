@@ -2,11 +2,16 @@ package appManager;
 
 import XMLgenerated.MagitSingleCommit;
 import org.apache.commons.codec.digest.DigestUtils;
+import puk.team.course.magit.ancestor.finder.CommitRepresentative;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 import static appManager.ZipHandler.*;
@@ -24,11 +29,12 @@ public class Commit {
         dateCreated = setDate();
     }
 
+
     public static void createCommit(appManager m, String note, String username) {
         Commit newCommit = new Commit(note, username);
         //Where to use?
         String prevSha1 = getHeadCommitSha1();
-        String secPrevSha1 = getSecHeadCommitSha1();
+        String secPrevSha1 = "";
         DiffHandler diff = new DiffHandler();
         diff.createModifiedFilesLists();
         diff.setModifiedFolders();
@@ -53,7 +59,6 @@ public class Commit {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     public static String getHeadCommitSha1() {
@@ -65,13 +70,12 @@ public class Commit {
         return prevCommitSha1;
     }
 
-    public static String getSecHeadCommitSha1() {
-        /*
-         * For merging.
-         * Ex2
-         *
-         * */
-        return "";
+    public static String getSecHeadCommitSha1(String branchName) {
+        String prevCommitSha1 = null;
+        File f = findFileInFolderByName(PathConsts.BRANCHES_FOLDER(), branchName);
+        if (f.exists())
+            prevCommitSha1 = unzipFileToString(f);
+        return prevCommitSha1;
     }
 
     public static String getCommitRootFolderSha1(String commitSha1) {
@@ -98,8 +102,8 @@ public class Commit {
 
     public static String getXmlCommitSha1(XmlRepo repo, String commitId) throws IOException {
         String headFolderSha1 = null;
-        String prevSha1 = null;
-        String secPrevSha1 = null;
+        String prevSha1 = "";
+        String secPrevSha1 = "";
         MagitSingleCommit c = getMagitSingleCommit(repo, commitId);
         Folder head = new Folder();
         headFolderSha1 = Folder.getXmlFolderSha1(head, repo, c.getRootFolder().getId());
@@ -138,23 +142,69 @@ public class Commit {
         return null;
     }
 
+    public static List<String> getPrevCommits(Commit.commitComps c) {
+        List<String> out = new LinkedList();
+        if(!c.getPrevCommit().equals("")) out.add(c.getPrevCommit());
+        if(!c.getSecPrevCommit().equals("")) out.add(c.getSecPrevCommit());
+        return out;
+    }
+
+    public static CommitRepresentative sha1ToCommitComps(String sha1) {
+        List<String> commitRep = unzipFolderToCompList(sha1, PathConsts.OBJECTS_FOLDER());
+        return (new Commit.commitComps(sha1, commitRep.get(0), commitRep.get(1), commitRep.get(2), commitRep.get(3), commitRep.get(4), commitRep.get(5)));
+    }
+
+    public static void createMergedCommit(appManager m, String note, String username, String branchName, MergeHandler mergeHandler) {
+        Commit newCommit = new Commit(note, username);
+        //Where to use?
+        String prevSha1 = getHeadCommitSha1();
+        String secPrevSha1 = getSecHeadCommitSha1(branchName);
+        try {
+            Folder head = new Folder();
+            String headFolderSha1 = m.scanWcForMergeCommit(head, workingPath, newCommit.dateCreated, mergeHandler.getRepresentationMap());
+            String commitTxtRep = headFolderSha1 + "\n" +
+                    prevSha1 + "\n" +
+                    secPrevSha1 + "\n" +
+                    note + "\n" +
+                    newCommit.getDateCreated() + "\n" +
+                    newCommit.getAuthor();
+            File headFolderRep = createTextRepresentation(head.toString(), headFolderSha1);
+            File commitRep = createTextRepresentation(commitTxtRep, DigestUtils.sha1Hex(commitTxtRep));
+            zipFile(headFolderRep, headFolderSha1, PathConsts.OBJECTS_FOLDER());
+            zipFile(commitRep, DigestUtils.sha1Hex(commitTxtRep), PathConsts.OBJECTS_FOLDER());
+            headFolderRep.delete();
+            commitRep.delete();
+            Branch.updateHeadBrunch(DigestUtils.sha1Hex(commitTxtRep));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private String setDate() {
-        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss.SSS"));
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy-HH:mm:ss:SSS"));
     }
 
     public String getDateCreated() {
         return dateCreated;
     }
 
-
     public String getAuthor() {
         return author;
     }
 
-    public static class commitComps {
+    public static class commitComps implements Comparable<commitComps>, CommitRepresentative {
         public String getSha1() {
             return sha1;
+        }
+
+        @Override
+        public String getFirstPrecedingSha1() {
+            return this.prevCommit;
+        }
+
+        @Override
+        public String getSecondPrecedingSha1() {
+            return this.secPrevCommit;
         }
 
         public String getNote() {
@@ -169,17 +219,40 @@ public class Commit {
             return author;
         }
 
+        public String getHeadFolder() {
+            return headFolder;
+        }
+
+        public String getPrevCommit() {
+            return prevCommit;
+        }
+
+        public String getSecPrevCommit() {
+            return secPrevCommit;
+        }
+
         String sha1;
         String note;
         String date;
         String author;
+        String headFolder;
+        String prevCommit;
+        String secPrevCommit;
 
-        public commitComps(String sha1, String note, String date, String author) {
+        public commitComps(String sha1, String headFolder, String prevCommit, String secPrevCommit, String note, String date, String author) {
             this.sha1 = sha1;
             this.note = note;
             this.date = date;
             this.author = author;
+            this.headFolder = headFolder;
+            this.prevCommit = prevCommit;
+            this.secPrevCommit = secPrevCommit;
         }
+
+//        public static commitComps sha1ToCommitComps(String sha1){
+//            List<String> commitRep = unzipFolderToCompList(sha1, PathConsts.OBJECTS_FOLDER());
+//
+//        }
 
         @Override
         public String toString() {
@@ -187,6 +260,28 @@ public class Commit {
                     "note: " + note + '\n' +
                     "date: " + date + '\n' +
                     "author: " + author + '\n';
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if(obj instanceof commitComps){
+                return this.sha1.equals(((commitComps) obj).getSha1());
+            }
+            return false;
+        }
+
+        @Override
+        public int compareTo(commitComps o) {
+            Date thisDate = null;
+            Date otherDate = null;
+            try {
+                thisDate = new SimpleDateFormat("dd.MM.yyyy-HH:mm:ss:SSS").parse(this.date);
+                otherDate = new SimpleDateFormat("dd.MM.yyyy-HH:mm:ss:SSS").parse(o.getDate());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+                return thisDate.compareTo(otherDate);
+
         }
     }
 

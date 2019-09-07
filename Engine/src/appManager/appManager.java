@@ -1,7 +1,9 @@
 package appManager;
 
 
+import common.Consts;
 import org.apache.commons.codec.digest.DigestUtils;
+import puk.team.course.magit.ancestor.finder.AncestorFinder;
 import sun.dc.path.PathException;
 
 import java.io.File;
@@ -12,8 +14,7 @@ import java.nio.file.*;
 import java.util.*;
 
 import static appManager.Commit.getHeadCommitRootFolderSha1;
-import static appManager.ZipHandler.unzipFolderToCompList;
-import static appManager.ZipHandler.zipFile;
+import static appManager.ZipHandler.*;
 
 public class appManager {
 
@@ -28,6 +29,13 @@ public class appManager {
         workingPath = null;
         repository = null;
         manager = this;
+    }
+
+    public static void insertFileToWc(Path path, String name, String sha1) throws IOException {
+        if (Files.exists(Paths.get(path + "/" + name))) {
+            manager.deleteFileFromFolder(String.valueOf(path), name);
+        }
+        manager.deployFile(sha1, path);
     }
 
     public void deployXml(XmlRepo repo) throws IOException {
@@ -60,6 +68,10 @@ public class appManager {
 
     public void createNewCommit(String note) throws IOException {
         Commit.createCommit(this, note, username);
+    }
+
+    private void createMergedCommit(appManager manager, String note, String username, String branchName, MergeHandler mergeHandler) {
+        Commit.createMergedCommit(manager, note, username, branchName, mergeHandler);
     }
 
 
@@ -282,7 +294,7 @@ public class appManager {
         Branch.changeActiveBranch(branchName);
     }
 
-    private void deleteAllFilesFromFolder(Path path) throws FileSystemException {
+    public static void deleteAllFilesFromFolder(Path path) throws FileSystemException {
         List<File> files = getFiles(path);
         for (File f : files) {
             if (f.isDirectory())
@@ -317,6 +329,15 @@ public class appManager {
         }
     }
 
+    public static void deployFile(String sha1, Path deployTo) {
+        File f = findFileInFolderByName(PathConsts.OBJECTS_FOLDER(), sha1);
+        try {
+            ZipHandler.extract(f, deployTo.toFile());
+        } catch (IOException e) {
+            throw new UnsupportedOperationException("cannot extract file");
+        }
+    }
+
     public List<String> getCommitRep(String sha1) {
         return unzipFolderToCompList(sha1, PathConsts.OBJECTS_FOLDER());
     }
@@ -339,12 +360,12 @@ public class appManager {
         return value.matches("^[a-f0-9]{40}$");
     }
 
-    public List<Commit.commitComps> branchHistoryToListBySha1(String currSha1) {
+    public static List<Commit.commitComps> branchHistoryToListByCommitSha1(String currSha1) {
         List<Commit.commitComps> commits = new LinkedList<>();
         List<String> commitRep;
-        while (!(currSha1.equals("") || currSha1.equals("null"))) {
+        while (!(currSha1.equals("") || currSha1.equals("null") || currSha1.equals(Consts.EMPTY_SHA1))) {
             commitRep = unzipFolderToCompList(currSha1, PathConsts.OBJECTS_FOLDER());
-            commits.add(new Commit.commitComps(currSha1, commitRep.get(3), commitRep.get(4), commitRep.get(5)));
+            commits.add(new Commit.commitComps(currSha1, commitRep.get(0), commitRep.get(1), commitRep.get(2), commitRep.get(3), commitRep.get(4), commitRep.get(5)));
             currSha1 = commitRep.get(1);
         }
         return commits;
@@ -367,5 +388,103 @@ public class appManager {
 
     public String getHeadBranchName() {
         return unzipFolderToCompList("HEAD", PathConsts.BRANCHES_FOLDER()).get(0);
+    }
+
+    public List<Commit.commitComps> getAllCommits() {
+        List<Commit.commitComps> out = new LinkedList<>();
+        List<Branch> allBranches = Branch.allBranchesToList();
+        for (Branch b : allBranches) {
+            out.addAll(b.getAllCommits(b.getName()));
+        }
+        Collections.sort(out);
+        return removeDuplicatesFromList(out);
+    }
+
+    private List<Commit.commitComps> removeDuplicatesFromList(List<Commit.commitComps> lst) {
+        List<Commit.commitComps> out = new LinkedList();
+        if (lst.size() > 0) out.add(lst.get(0));
+        for (Commit.commitComps c : lst) {
+            if (!c.getSha1().equals(out.get(out.size() - 1).getSha1()))
+                out.add(c);
+        }
+        return out;
+    }
+
+    public static String getCommonFatherSha1(String firstSha1, String secSha1) {
+        AncestorFinder fatherFinder = new AncestorFinder((Commit::sha1ToCommitComps));
+        return fatherFinder.traceAncestor(firstSha1, secSha1);
+    }
+
+    public void mergeBranch(String note, String branchName) throws IOException {
+//        String oursCommitSha1 = Branch.getCommitSha1ByBranchName(Branch.getActiveBranch());
+//        String theirCommitSha1 = Branch.getCommitSha1ByBranchName(branchName);
+//        String commonFatherSha1 = getCommonFatherSha1(oursCommitSha1, theirCommitSha1);
+//        MergeHandler mergeHandler = new MergeHandler();
+//        mergeHandler.getMergedHeadFolderAndSaveFiles(commitSha1ToHeadFolderFilesList(oursCommitSha1), commitSha1ToHeadFolderFilesList(theirCommitSha1), commitSha1ToHeadFolderFilesList(commonFatherSha1), appManager.workingPath);
+//        MergeHandler.resolveConflicts(mergeHandler.getConflicts());
+//        createMergedCommit(this, note, username, branchName, mergeHandler);
+    }
+
+
+
+
+    public static List<String> commitSha1ToHeadFolderFilesList(String folderSha1) {
+        String EMPTY_SHA1 = "da39a3ee5e6b4b0d3255bfef95601890afd80709";
+        List<String> commitRep = unzipFolderToCompList(folderSha1, PathConsts.OBJECTS_FOLDER());
+        return (folderSha1 == null || folderSha1.equals(EMPTY_SHA1)) ?
+                new ArrayList<>()
+                : unzipFolderToCompList(commitRep.get(0), PathConsts.OBJECTS_FOLDER());
+    }
+
+    public static List<String> folderSha1ToFilesList(String folderSha1) {
+        String EMPTY_SHA1 = "da39a3ee5e6b4b0d3255bfef95601890afd80709";
+        return (folderSha1 == null || folderSha1.equals(EMPTY_SHA1)) ?
+                new ArrayList<>()
+                : unzipFolderToCompList(folderSha1, PathConsts.OBJECTS_FOLDER());
+    }
+
+    public static List<String> initEmptyList() {
+        List<String> out = new LinkedList<>();
+        out.add("");
+        out.add("");
+        out.add("");
+        out.add("");
+        out.add("");
+        return out;
+    }
+
+    public String scanWcForMergeCommit(Folder currFolder, Path currPath, String date, Map<Path, List<String>> representationMap) throws IOException {
+        List<File> files = getFiles(currPath);
+        List<Folder.folderComponents> filesInFolder = currFolder.getFilesInFolder();
+        for (File f : files) {
+            String name = f.getName();
+            String sha1;
+            Path relevantPath = Paths.get(currPath + "/" + name);
+            if (!f.isDirectory()) {
+                if (representationMap.containsKey(relevantPath)) {
+                    filesInFolder.add(new Folder.folderComponents(representationMap.get(relevantPath)));
+                }
+                //else it was deleted?
+            } else {
+                if (representationMap.containsKey(relevantPath)) {
+                    filesInFolder.add(new Folder.folderComponents(representationMap.get(relevantPath)));
+                } else {
+                    Folder fol = new Folder();
+                    sha1 = scanWcForMergeCommit(fol, Paths.get(f.getPath()), date, representationMap);
+                    File folRep = createTextRepresentation(fol.toString(), sha1);
+                    zipFile(folRep, sha1, PathConsts.OBJECTS_FOLDER());
+                    folRep.delete();
+                    filesInFolder.add(new Folder.folderComponents(name, sha1, "FOLDER", date, username));
+                }
+            }
+        }
+        Collections.sort(currFolder.getFilesInFolder());
+        return DigestUtils.sha1Hex(currFolder.toString());
+    }
+
+    public static String getFileDataFromSha1(String sha1){
+        File f = appManager.findFileInFolderByName(PathConsts.OBJECTS_FOLDER(), sha1);
+        String dataFromZipped = unzipFileToString(f);
+        return dataFromZipped;
     }
 }

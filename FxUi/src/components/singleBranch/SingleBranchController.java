@@ -86,4 +86,13 @@ public class SingleBranchController {
             ExceptionHandler.showExceptionDialog(ex);
         }
     }
+
+    @FXML
+    private void mergeBranch(ActionEvent actionEvent) {
+        try {
+            MAGitController.mainController.mergeBranch(this.getNameProp());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

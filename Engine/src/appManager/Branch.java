@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,7 +14,22 @@ import static appManager.Commit.getHeadCommitSha1;
 import static appManager.ZipHandler.*;
 import static appManager.appManager.*;
 
-public class Branch {
+public class Branch implements Comparable<Branch> {
+    public static List<Branch> getBranchesInTreeOrder() {
+        List<Branch> allBranches = allBranchesToList();
+        for (Branch b : allBranches) {
+            if (b.getName().equals("master")) {
+                allBranches.remove(b);
+                break;
+            }
+        }
+        List<File> files = getFiles(Paths.get(PathConsts.BRANCHES_FOLDER()));
+        if (files.stream().filter(o -> o.getName().equals("master")).findFirst().isPresent())
+            allBranches.add(0, new Branch("master"));
+        Collections.sort(allBranches);
+        return allBranches;
+    }
+
     public String getName() {
         return name;
     }
@@ -23,6 +39,11 @@ public class Branch {
     }
 
     private String name;
+
+    public String getCommitSha1() {
+        return commitSha1;
+    }
+
     private String commitSha1;
     private String commitNote;
     private boolean isActive;
@@ -80,11 +101,26 @@ public class Branch {
     public static List<Branch> allBranchesToList() {
         List<Branch> out = new LinkedList<>();
         List<File> files = getFiles(Paths.get(PathConsts.BRANCHES_FOLDER()));
-        for (File f : files)
+        for (File f : files) {
             if (!f.getName().equals("HEAD"))
                 out.add(new Branch(f.getName()));
-        return out;
+        }
+        return setBranchListPositioning(out);
     }
+
+    private static List<Branch> setBranchListPositioning(List<Branch> out) {
+        //not working in debug??
+        for(Branch b : out){
+            if(b.getName().equals("master")){
+                Branch temp = b;
+                out.remove(b);
+                out.add(0,temp);
+                break;
+            }
+        }
+        return  out;
+    }
+
 
     public static void createNewBranch(String name) {
         String currCommitSha1 = getHeadCommitSha1();
@@ -156,7 +192,7 @@ public class Branch {
         return out;
     }
 
-    private static boolean isBranchActive(String name) {
+    public static boolean isBranchActive(String name) {
         String headBranchName = unzipFolderToCompList("HEAD", PathConsts.BRANCHES_FOLDER()).get(0);
         return name.equals(headBranchName);
     }
@@ -186,5 +222,28 @@ public class Branch {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static List<Commit.commitComps> getAllCommits(String branchName) {
+        String headCommitSha1 = getCommitSha1ByBranchName(branchName);
+        return branchHistoryToListByCommitSha1(headCommitSha1);
+    }
+
+    @Override
+    public int compareTo(Branch o) {
+        List<Commit.commitComps> ourCommits = branchHistoryToListByCommitSha1(this.commitSha1);
+        List<Commit.commitComps> theirCommits = branchHistoryToListByCommitSha1(o.getCommitSha1());
+        if (ourCommits.size() == 0 || theirCommits.size() == 0) {
+            if (ourCommits.size() == 0) return -1;
+            if (theirCommits.size() == 0) return 1;
+            else return 0;
+        }
+        Collections.reverse(ourCommits);
+        Collections.reverse(theirCommits);
+        return ourCommits.get(0).compareTo(theirCommits.get(0));
+    }
+
+    public static String getActiveBranch(){
+        return unzipFolderToCompList("HEAD", PathConsts.BRANCHES_FOLDER()).get(0);
     }
 }

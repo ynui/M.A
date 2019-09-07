@@ -12,6 +12,7 @@
             <MenuItem mnemonicParsing="false" onAction="#branchCheckout" text="Checkout" />
             <MenuItem mnemonicParsing="false" onAction="#branchDelete" text="Delete " />
           <MenuItem mnemonicParsing="false" onAction="#branchReset" text="Reset" />
+            <MenuItem mnemonicParsing="false" onAction="#mergeBranch" text="Merge" />
         </items>
       </ContextMenu>
    </contextMenu>

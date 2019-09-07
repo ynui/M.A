@@ -11,6 +11,23 @@ public class DiffHandler {
 
     final String EMPTY_SHA1 = "da39a3ee5e6b4b0d3255bfef95601890afd80709";
 
+
+    List<String> created;
+    List<String> deleted;
+    List<String> changed;
+    List<String> modifiedBlobs;
+    Set<String> modifiedFolders;
+    Map<Path, List<String>> unmodifiedBlobs;
+
+    public DiffHandler() {
+        created = new LinkedList<>();
+        deleted = new LinkedList<>();
+        changed = new LinkedList<>();
+        modifiedBlobs = new LinkedList<>();
+        modifiedFolders = new HashSet<>();
+        unmodifiedBlobs = new HashMap<>();
+    }
+
     public List<String> getCreated() {
         return created;
     }
@@ -33,23 +50,6 @@ public class DiffHandler {
 
     public Map<Path, List<String>> getUnmodifiedBlobs() {
         return unmodifiedBlobs;
-    }
-
-    List<String> created;
-    List<String> deleted;
-    List<String> changed;
-    List<String> modifiedBlobs;
-    Set<String> modifiedFolders;
-    Map<Path, List<String>> unmodifiedBlobs;
-
-
-    public DiffHandler() {
-        created = new LinkedList<>();
-        deleted = new LinkedList<>();
-        changed = new LinkedList<>();
-        modifiedBlobs = new LinkedList<>();
-        modifiedFolders = new HashSet<>();
-        unmodifiedBlobs = new HashMap<>();
     }
 
     //setDiffs
@@ -150,7 +150,7 @@ public class DiffHandler {
 //        }
 //    }
 
-    private void addAllFolderRepFilesToList(List<String> lst, Path path, String prevSha1) {
+    protected void addAllFolderRepFilesToList(List<String> lst, Path path, String prevSha1) {
         List<String> prevComponents = new ArrayList<>();
         List<String> prevStateFolderRep = prevSha1 == null ? new ArrayList<>() : unzipFolderToCompList(prevSha1, PathConsts.OBJECTS_FOLDER());
         for (String fileRep : prevStateFolderRep) {
@@ -162,12 +162,24 @@ public class DiffHandler {
         }
     }
 
+    protected void addAllFolderRepFilesToMap(Map<Path, List<String>> map, Path path, String prevSha1) {
+        List<String> prevComponents = new ArrayList<>();
+        List<String> prevStateFolderRep = prevSha1 == null ? new ArrayList<>() : unzipFolderToCompList(prevSha1, PathConsts.OBJECTS_FOLDER());
+        for (String fileRep : prevStateFolderRep) {
+            prevComponents = appManager.folderRepToList(fileRep);
+            if (prevComponents.get(2).equals("FOLDER"))
+                addAllFolderRepFilesToMap(map, Paths.get(path + "/" + prevComponents.get(0)), prevComponents.get(1));
+            else
+                map.put(Paths.get(path + "/" + prevComponents.get(0)),prevComponents);
+        }
+    }
+
     //i can send modified files and check there instead of checking 3 lists again
     public void setModifiedFolders() {
         addModifiedFoldersToList(modifiedBlobs, modifiedFolders, appManager.workingPath);
     }
 
-    private void addModifiedFoldersToList(List<String> lst, Set<String> out, Path rootPath) {
+    protected void addModifiedFoldersToList(List<String> lst, Set<String> out, Path rootPath) {
         for (String s : lst) {
             Path p = Paths.get(s).getParent();
             while (!p.equals(rootPath)) {
@@ -176,5 +188,12 @@ public class DiffHandler {
             }
         }
     }
+
+
+
+
+
+
+
 
 }

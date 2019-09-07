@@ -8,8 +8,16 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="commons-codec-1.12" level="application" />
-    <orderEntry type="library" name="commons-collections4-4.3" level="application" />
     <orderEntry type="library" name="commons-io-2.6" level="application" />
     <orderEntry type="module" module-name="FxUi" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../lib/AncestorFinder.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

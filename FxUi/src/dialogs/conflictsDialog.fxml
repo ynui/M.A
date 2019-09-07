@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="dialogs.ConflictsController">
+   <content>
+      <VBox>
+         <children>
+            <HBox prefHeight="200.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <VBox>
+                     <children>
+                        <Label text="Ours" />
+                        <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                           <content>
+                              <Label fx:id="ourVersion" text="Our" />
+                           </content>
+                        </ScrollPane>
+                     </children>
+                  </VBox>
+                  <VBox>
+                     <children>
+                        <Label text="Theirs" />
+                        <ScrollPane fitToHeight="true" fitToWidth="true" minWidth="-Infinity" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                           <content>
+                              <Label fx:id="theirVersion" text="Their" />
+                           </content>
+                        </ScrollPane>
+                     </children>
+                  </VBox>
+                  <VBox>
+                     <children>
+                        <Label text="Fathers" />
+                        <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                           <content>
+                              <Label fx:id="fatherVersion" text="Father" />
+                           </content>
+                        </ScrollPane>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <ScrollPane prefHeight="250.0">
+               <content>
+                  <TextArea fx:id="yourVersion" prefHeight="250.0" prefWidth="600.0" />
+               </content>
+            </ScrollPane>
+            <HBox>
+               <children>
+                  <Button fx:id="oursBtn" mnemonicParsing="false" onAction="#insertOurs" text="Choose Ours" />
+                  <Button fx:id="theirsBtn" mnemonicParsing="false" onAction="#insertTheirs" text="Choose Theirs" />
+                  <Button fx:id="fatherBtn" mnemonicParsing="false" onAction="#insertFather" text="Choose Fathers" />
+                  <Button fx:id="yourBtn" mnemonicParsing="false" onAction="#insertYours" text="Choose Yours" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </content>
+</ScrollPane>

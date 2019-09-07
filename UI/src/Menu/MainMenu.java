@@ -258,10 +258,10 @@ public class MainMenu {
         this.addMenuItem("11", "Show active branch's history", () -> {
             if (appManager.workingPath == null)
                 throw new UnsupportedOperationException("No repository has been loaded yet!");
-            List<Commit.commitComps> commits = manager.branchHistoryToListBySha1(getHeadCommitSha1());
+            List<Commit.commitComps> commits = manager.branchHistoryToListByCommitSha1(getHeadCommitSha1());
             for (int i = 0; i < commits.size(); i++) {
                 System.out.println(i + 1 + ":");
-                System.out.println(commits.get(i));
+               // System.out.println(commits.get(i));
                 System.out.println("===============");
             }
         });

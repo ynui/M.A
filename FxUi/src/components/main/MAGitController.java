@@ -2,13 +2,22 @@ package components.main;
 
 
 import appManager.*;
+import com.fxgraph.edges.Edge;
+import com.fxgraph.graph.Graph;
+import com.fxgraph.graph.ICell;
+import com.fxgraph.graph.Model;
+import com.fxgraph.graph.PannableCanvas;
+import commitTree.layout.CommitTreeLayout;
+import commitTree.node.CommitNode;
 import common.Consts;
 import common.ExceptionHandler;
 import common.QuestionConsts;
 import components.FileView;
 import components.singleBranch.SingleBranchController;
 import components.singleCommit.SingleCommitController;
+import dialogs.ConflictsController;
 import dialogs.newRepoController;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.concurrent.Task;
@@ -37,12 +46,16 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.*;
 
+import static appManager.Commit.createMergedCommit;
+import static appManager.Commit.getPrevCommits;
 import static appManager.ZipHandler.unzipFileToString;
 import static appManager.ZipHandler.unzipFolderToCompList;
+import static appManager.appManager.commitSha1ToHeadFolderFilesList;
 import static common.ExceptionHandler.showExceptionDialog;
 import static common.QuestionConsts.askForYesNo;
 
@@ -114,11 +127,16 @@ public class MAGitController {
     @FXML
     private Label textPlace;
 
+    public static String getFileDataFromSha1(String sha1) {
+        return appManager.getFileDataFromSha1(sha1);
+    }
+
+
     public void showBranchCommits(String branchName) throws IOException {
         SingleBranchController b = new SingleBranchController();
         VBox target = MAGitController.mainController.getCommitsVbox();
         target.getChildren().clear();
-        b.setCommitList(appManager.manager.branchHistoryToListBySha1(Branch.getCommitSha1ByBranchName(branchName)));
+        b.setCommitList(appManager.manager.branchHistoryToListByCommitSha1(Branch.getCommitSha1ByBranchName(branchName)));
         for (Commit.commitComps c : b.getCommitList()) {
             FXMLLoader loader = new FXMLLoader();
             URL url = getClass().getResource("../singleCommit/singleCommit.fxml");
@@ -182,8 +200,6 @@ public class MAGitController {
         updateUiRepoLabels();
         showWcStatus();
     }
-
-
 
     public void updateUiRepoLabels() {
         if (appManager.workingPath == null) return;
@@ -419,27 +435,9 @@ public class MAGitController {
         showWcStatus();
     }
 
-//    private Node getHeadBranchBtn() {
-//        for (Node n : branchesVbox.getChildren())
-//            if (n.toString().endsWith("'" + this.branchNameProp.getValue() + "'")) {
-//                return n;
-//            }
-//        return null;
-//    }
-
     public List<String> getCommitRep(String sha1) {
         return manager.getCommitRep(sha1);
     }
-
-//    public void showCommitRep(String sha1) {
-//        List<String> folderRep = unzipFolderToCompList(sha1, PathConsts.OBJECTS_FOLDER());
-//        WcInfoList.getRoot().getChildren().clear();
-//        List<String> prevComps;
-//        for (String s : folderRep) {
-//            prevComps = appManager.folderRepToList(s);
-//            WcInfoList.getRoot().getChildren().add(new TreeItem<>(new FileView(prevComps)));
-//        }
-//    }
 
     public void showCommitRep(String sha1, TreeItem currRoot) {
         ImageView icon;
@@ -491,9 +489,161 @@ public class MAGitController {
         }
     }
 
+    public void showCommitTree() {
+        Graph tree = new Graph();
+        List<Commit.commitComps> allCommits = manager.getAllCommits();
+        addCommitsToGraph(tree, allCommits);
+        addEdgesToGraph(tree);
+        tree.endUpdate();
+        setTreePositioning(tree.getModel(), Branch.allBranchesToList());
+        showTreeDialog(tree);
+    }
 
+    private void addEdgesToGraph(Graph tree) {
+        Model model = tree.getModel();
+        for (ICell cell : model.getAllCells()) {
+            CommitNode commitNode = (CommitNode) cell;
+            List<String> commitRepList = unzipFolderToCompList(commitNode.getSha1(), PathConsts.OBJECTS_FOLDER());
+            Commit.commitComps commitRep = new Commit.commitComps(commitNode.getSha1(), commitRepList.get(0), commitRepList.get(1), commitRepList.get(2), commitRepList.get(3), commitRepList.get(4), commitRepList.get(5));
+            List<String> prevCommits = getPrevCommits(commitRep);
+            for (String sha1 : prevCommits)
+                connectGraphNodes(tree, cell, sha1);
+        }
+    }
 
+    private void connectGraphNodes(Graph tree, ICell originCell, String sha1) {
+        Model model = tree.getModel();
+        for (ICell cell : model.getAllCells()) {
+            CommitNode commitNode = (CommitNode) cell;
+            if (commitNode.getSha1().equals(sha1)) {
+                model.addEdge(new Edge(originCell, commitNode));
+                break;
+            }
+        }
+    }
 
+    private void showTreeDialog(Graph tree) {
+        try {
+            tree.layout(new CommitTreeLayout());
+            showGraph(tree);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    private void addCommitsToGraph(Graph tree, List<Commit.commitComps> allCommits) {
+        List<Commit.commitComps> reversedAllCommits = new LinkedList<>(allCommits);
+        Collections.reverse(reversedAllCommits);
+        Model model = tree.getModel();
+        tree.beginUpdate();
+        for (Commit.commitComps c : reversedAllCommits) {
+            ICell cell = new CommitNode(c.getDate(), c.getAuthor(), c.getNote(), c.getSha1());
+            model.addCell(cell);
+        }
+        tree.endUpdate();
+    }
 
+    private void setTreePositioning(Model model, List<Branch> branchesTreeOrdered) {
+        for (ICell cell : model.getAllCells()) {
+            boolean found = false;
+            CommitNode commitNode = (CommitNode) cell;
+            for (int i = 0; i < branchesTreeOrdered.size(); i++) {
+                List<Commit.commitComps> commits = Branch.getAllCommits(branchesTreeOrdered.get(i).getName());
+                for (Commit.commitComps c : commits) {
+                    if (c.getSha1().equals(commitNode.getSha1())) {
+                        commitNode.setPos(i);
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) break;
+            }
+        }
+    }
+
+    private Map<String, Boolean> getCommitsMap(List<Commit.commitComps> allCommits) {
+        Map<String, Boolean> out = new HashMap();
+        for (Commit.commitComps c : allCommits)
+            out.put(c.getSha1(), false);
+        return out;
+    }
+
+    private void showGraph(Graph tree) throws Exception {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        URL url = getClass().getResource("/commitTree/commitTree.fxml");
+        fxmlLoader.setLocation(url);
+        ScrollPane scrollPane = fxmlLoader.load(url.openStream());
+
+        final Scene scene = new Scene(scrollPane, 700, 400);
+        Stage stage = new Stage();
+        PannableCanvas canvas = tree.getCanvas();
+        scrollPane.setContent(canvas);
+
+        Platform.runLater(() -> {
+            tree.getUseNodeGestures().set(false);
+            tree.getUseViewportGestures().set(false);
+        });
+
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setScene(scene);
+        stage.showAndWait();
+    }
+
+    public void mergeBranch(String branchName) throws IOException {
+        if (Branch.isBranchActive(branchName)) {
+            showExceptionDialog(new UnsupportedOperationException("Cannot merge with the active branch"));
+            return;
+        }
+        DiffHandler diff = manager.getDiff();
+        if (!manager.isCleanState(diff)) {
+            showExceptionDialog(new UnsupportedOperationException("Local changes apply\nPlease commit and try again\n\nOperation terminated."));
+            return;
+        }
+        TextInputDialog dialog = setNewDialog("Merging Commit", "Merging commit to: " + manager.getHeadBranchName() + "\nEnter note:", "");
+        dialog.showAndWait();
+        if (dialog.getResult() == null) return;
+
+        String oursCommitSha1 = Branch.getCommitSha1ByBranchName(Branch.getActiveBranch());
+        String theirCommitSha1 = Branch.getCommitSha1ByBranchName(branchName);
+        String commonFatherSha1 = getCommonFatherSha1(oursCommitSha1, theirCommitSha1);
+        MergeHandler mergeHandler = new MergeHandler();
+        mergeHandler.getMergedHeadFolderAndSaveFiles(commitSha1ToHeadFolderFilesList(oursCommitSha1), commitSha1ToHeadFolderFilesList(theirCommitSha1), commitSha1ToHeadFolderFilesList(commonFatherSha1), appManager.workingPath);
+        resolveConflicts(mergeHandler);
+        createMergedCommit(manager, dialog.getResult(), usernameProp.getValue(), branchName, mergeHandler);
+
+        showBranchCommits(branchNameProp.getValue());
+        showWcStatus();
+    }
+
+    private void resolveConflicts(MergeHandler mergeHandler) throws IOException {
+        for (MergeHandler.Conflict c : mergeHandler.getConflicts()) {
+            resolveSingleConflict(c, mergeHandler);
+        }
+
+    }
+
+    private void resolveSingleConflict(MergeHandler.Conflict c, MergeHandler mergeHandler) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../../dialogs/conflictsDialog.fxml"));
+        Parent parent = fxmlLoader.load();
+        ConflictsController controller = fxmlLoader.getController();
+        Scene scene = new Scene(parent);
+        Stage stage = new Stage();
+        controller.setPrimaryStage(stage);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        controller.setConflict(c);
+        controller.setMergeHandler(mergeHandler);
+        stage.showAndWait();
+    }
+
+    private String getCommonFatherSha1(String oursCommitSha1, String theirCommitSha1) {
+        return appManager.getCommonFatherSha1(oursCommitSha1, theirCommitSha1);
+    }
+
+    public void insertFileToWc(Path path, String name, String sha1) throws IOException {
+        if (Files.exists(Paths.get(path + "/" + name))) {
+            manager.deleteFileFromFolder(String.valueOf(path), name);
+        }
+        manager.deployFile(sha1, path);
+    }
 }
