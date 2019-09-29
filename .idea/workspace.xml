@@ -7,45 +7,90 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5bcfa559-9148-47de-97a6-088c256a727f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Engine/src/appManager/MergeHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FxUi/src/commitTree/commitTree.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FxUi/src/commitTree/layout/CommitTreeLayout.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FxUi/src/commitTree/node/CommitNode.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FxUi/src/commitTree/node/CommitNodeController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FxUi/src/commitTree/node/commitNode.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FxUi/src/commitTree/node/commitNode.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FxUi/src/dialogs/ConflictsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FxUi/src/dialogs/conflictsDialog.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FxUi/src/resources/appIcon.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/AncestorFinder.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/artifacts/Engine_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FxUi/src/commitTree/node/boldCommitNode.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FxUi/src/components/main/theme2.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FxUi/src/components/main/theme3.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FxUi/src/dialogs/CloneController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FxUi/src/dialogs/CommitDataController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FxUi/src/dialogs/CommitDataDialog.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FxUi/src/dialogs/cloneDialog.fxml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/MAGitHub/web/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/FxUi_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/FxUi_jar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/Engine.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/Engine.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/META-INF/MANIFEST.MF" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/META-INF/MANIFEST.MF" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/XMLgenerated/MagitRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/XMLgenerated/MagitRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/src/appManager/Branch.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/appManager/Branch.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/src/appManager/Commit.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/appManager/Commit.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/src/appManager/DiffHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/appManager/DiffHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/appManager/Folder.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/appManager/Folder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/appManager/MergeHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/appManager/MergeHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/appManager/PathConsts.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/appManager/PathConsts.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/appManager/Repository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/appManager/Repository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/appManager/XmlRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/appManager/XmlRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/appManager/ZipHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/appManager/ZipHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/src/appManager/appManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/appManager/appManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/tasks/deployXmlTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/tasks/deployXmlTask.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FxUi/FxUi.iml" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/FxUi.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FxUi/src/FxMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/FxMain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/META-INF/MANIFEST.MF" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/META-INF/MANIFEST.MF" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/commitTree/commitTree.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/commitTree/commitTree.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/commitTree/layout/CommitTreeLayout.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/commitTree/layout/CommitTreeLayout.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/commitTree/node/CommitNode.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/commitTree/node/CommitNode.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/commitTree/node/CommitNodeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/commitTree/node/CommitNodeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/commitTree/node/commitNode.css" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/commitTree/node/commitNode.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/commitTree/node/commitNode.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/commitTree/node/commitNode.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/common/ExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/common/ExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/common/QuestionConsts.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/common/QuestionConsts.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FxUi/src/components/main/MAGit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/main/MAGit.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FxUi/src/components/singleBranch/SingleBranchController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/singleBranch/SingleBranchController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FxUi/src/components/singleBranch/singleBranch.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/components/singleBranch/singleBranch.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UI/src/Menu/MainMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/UI/src/Menu/MainMenu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/FxUi_jar/FxUi.jar" beforeDir="false" afterPath="$PROJECT_DIR$/out/artifacts/FxUi_jar/FxUi.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/components/singleBranch/SingleBranchController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/components/singleBranch/singleBranch.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/components/singleCommit/SingleCommitController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/components/singleCommit/singleCommit.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/dialogs/ConflictsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/dialogs/ConflictsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/dialogs/conflictsDialog.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/dialogs/conflictsDialog.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/dialogs/newRepoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/dialogs/newRepoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FxUi/src/dialogs/newRepoDialog.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FxUi/src/dialogs/newRepoDialog.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/artifacts/FxUi_jar/FxUi.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/META-INF/MANIFEST.MF" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/META-INF/MANIFEST.MF" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/XMLgenerated/MagitRepository$MagitRemoteReference.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/XMLgenerated/MagitRepository$MagitRemoteReference.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/Branch.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/Branch.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/Commit$commitComps.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/Commit$commitComps.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/Commit.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/Commit.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/DiffHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/DiffHandler.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/Folder$folderComponents$eType.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/Folder$folderComponents$eType.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/Folder$folderComponents.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/Folder$folderComponents.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/MergeHandler$Conflict.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/MergeHandler$Conflict.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/MergeHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/MergeHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/PathConsts.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/PathConsts.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/Repository.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/Repository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/XmlRepo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/XmlRepo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/ZipHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/ZipHandler.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Engine/appManager/appManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/appManager/appManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/tasks/deployXmlTask.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/tasks/deployXmlTask.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/FxUi/FxMain.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/FxMain.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/META-INF/MANIFEST.MF" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/META-INF/MANIFEST.MF" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/commitTree/commitTree.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/commitTree/commitTree.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/commitTree/layout/CommitTreeLayout.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/commitTree/layout/CommitTreeLayout.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/commitTree/node/CommitNode.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/commitTree/node/CommitNode.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/commitTree/node/CommitNodeController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/commitTree/node/CommitNodeController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/commitTree/node/commitNode.css" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/commitTree/node/commitNode.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/commitTree/node/commitNode.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/commitTree/node/commitNode.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/common/ExceptionHandler.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/common/ExceptionHandler.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/common/QuestionConsts.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/common/QuestionConsts.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGit.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGitController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/main/MAGitController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/singleBranch/SingleBranchController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/singleBranch/SingleBranchController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/singleBranch/singleBranch.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/components/singleBranch/singleBranch.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/UI/Menu/MainMenu.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/UI/Menu/MainMenu.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/singleBranch/SingleBranchController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/singleBranch/singleBranch.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/singleCommit/SingleCommitController.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/components/singleCommit/singleCommit.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/dialogs/ConflictsController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/dialogs/ConflictsController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/dialogs/conflictsDialog.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/dialogs/conflictsDialog.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/dialogs/newRepoController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/dialogs/newRepoController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FxUi/dialogs/newRepoDialog.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FxUi/dialogs/newRepoDialog.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/UI/Main/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/UI/Menu/MainMenu.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/UI/Menu/MenuItem.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/UI/Menu/QuestionConsts.class" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -74,8 +119,10 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="JavaFXApplication" />
-        <option value="FxmlFile" />
+        <option value="CSS File" />
         <option value="Class" />
+        <option value="FxmlFile" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -85,6 +132,7 @@
   <component name="ProjectId" id="1Pb0shr07FR9uykdx9qNL4uLoJW" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="Downloaded.Files.Path.Enabled" value="false" />
     <property name="Repository.Attach.Annotations" value="false" />
     <property name="Repository.Attach.JavaDocs" value="false" />
@@ -93,14 +141,15 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="last_directory_selection" value="$PROJECT_DIR$/FxUi/src" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../java-diff-utils-master" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Examples/Online Chat V2" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="copyright" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -120,11 +169,11 @@
       <recent name="components.main" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src\commitTree\node" />
+      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src\components\main" />
       <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src\commitTree" />
       <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src\components" />
       <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src\resources" />
-      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src\components\singleCommit" />
-      <recent name="C:\Users\ynui1\OneDrive\Desktop\Java\M.A.Git\FxUi\src\components\main" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -227,7 +276,31 @@
       <workItem from="1567587916184" duration="33631000" />
       <workItem from="1567672245856" duration="17781000" />
       <workItem from="1567787458338" duration="8737000" />
-      <workItem from="1567849451575" duration="24285000" />
+      <workItem from="1567849451575" duration="24437000" />
+      <workItem from="1567934404200" duration="17488000" />
+      <workItem from="1568025300939" duration="12317000" />
+      <workItem from="1568098932287" duration="17780000" />
+      <workItem from="1568201481270" duration="16758000" />
+      <workItem from="1568455782572" duration="7981000" />
+      <workItem from="1568464351656" duration="8111000" />
+      <workItem from="1568536312353" duration="9416000" />
+      <workItem from="1568553751607" duration="12825000" />
+      <workItem from="1568577674719" duration="888000" />
+      <workItem from="1568621587798" duration="27183000" />
+      <workItem from="1568715054201" duration="2376000" />
+      <workItem from="1568720280593" duration="18599000" />
+      <workItem from="1568794093210" duration="22494000" />
+      <workItem from="1568885499256" duration="28752000" />
+      <workItem from="1568971069820" duration="26309000" />
+      <workItem from="1569058211860" duration="12709000" />
+      <workItem from="1569084329112" duration="1161000" />
+      <workItem from="1569332700653" duration="644000" />
+      <workItem from="1569410432689" duration="5658000" />
+      <workItem from="1569422690705" duration="713000" />
+      <workItem from="1569423730023" duration="96000" />
+      <workItem from="1569574398227" duration="2339000" />
+      <workItem from="1569590059937" duration="40000" />
+      <workItem from="1569746771498" duration="847000" />
     </task>
     <task id="LOCAL-00001" summary="hi">
       <created>1566587615251</created>
@@ -281,15 +354,6 @@
     <option name="localTasksCounter" value="8" />
     <servers />
   </component>
-  <component name="TodoView">
-    <todo-panel id="selected-file">
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-    <todo-panel id="all">
-      <are-packages-shown value="true" />
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-  </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
@@ -310,8 +374,34 @@
         <entry key="MAIN">
           <value>
             <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="commitTree" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
               <option name="COLUMN_ORDER" />
             </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="commitTree" />
+                </option>
+              </RecentGroup>
+            </list>
           </value>
         </entry>
       </map>
@@ -339,44 +429,59 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Engine/src/appManager/Branch.java</url>
-          <line>155</line>
+          <line>235</line>
           <option name="timeStamp" value="356" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Engine/src/appManager/Commit.java</url>
-          <line>253</line>
+          <line>271</line>
           <option name="timeStamp" value="389" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Engine/src/appManager/appManager.java</url>
-          <line>92</line>
-          <option name="timeStamp" value="457" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Engine/src/appManager/appManager.java</url>
-          <line>422</line>
-          <option name="timeStamp" value="463" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Engine/src/appManager/Commit.java</url>
-          <line>164</line>
-          <option name="timeStamp" value="466" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/FxUi/src/dialogs/ConflictsController.java</url>
-          <line>92</line>
-          <option name="timeStamp" value="472" />
+          <line>243</line>
+          <option name="timeStamp" value="510" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/FxUi/src/dialogs/ConflictsController.java</url>
-          <line>124</line>
-          <option name="timeStamp" value="473" />
+          <url>file://$PROJECT_DIR$/FxUi/src/dialogs/newRepoController.java</url>
+          <line>51</line>
+          <option name="timeStamp" value="513" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Engine/src/appManager/appManager.java</url>
+          <line>688</line>
+          <option name="timeStamp" value="681" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Engine/src/appManager/appManager.java</url>
+          <line>759</line>
+          <option name="timeStamp" value="692" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/FxUi/src/dialogs/newRepoController.java</url>
+          <line>44</line>
+          <option name="timeStamp" value="693" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java</url>
+          <line>1168</line>
+          <option name="timeStamp" value="701" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java</url>
+          <line>1172</line>
+          <option name="timeStamp" value="703" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/FxUi/src/components/main/MAGitController.java</url>
+          <line>1173</line>
+          <option name="timeStamp" value="704" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
-        <watch expression="usernameProp.getName()" language="JAVA" />
+        <watch expression="o.getDate()" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>

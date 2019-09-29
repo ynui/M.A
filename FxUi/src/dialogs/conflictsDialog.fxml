@@ -6,58 +6,79 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="dialogs.ConflictsController">
-   <content>
-      <VBox>
+<GridPane alignment="CENTER" prefHeight="500.0" prefWidth="700.0" styleClass="Background" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dialogs.ConflictsController">
+  <columnConstraints>
+      <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" percentWidth="20.0" />
+    <ColumnConstraints hgrow="ALWAYS" minWidth="0.0" percentWidth="30.0" />
+      <ColumnConstraints hgrow="ALWAYS" minWidth="0.0" percentWidth="30.0" />
+    <ColumnConstraints hgrow="ALWAYS" minWidth="0.0" percentWidth="30.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints maxHeight="25.0" minHeight="0.0" prefHeight="20.0" vgrow="ALWAYS" />
+      <RowConstraints maxHeight="25.0" minHeight="0.0" prefHeight="20.0" vgrow="ALWAYS" />
+      <RowConstraints maxHeight="228.0" minHeight="10.0" prefHeight="225.0" vgrow="ALWAYS" />
+    <RowConstraints maxHeight="81.0" minHeight="-Infinity" prefHeight="24.0" vgrow="ALWAYS" />
+      <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="215.0" vgrow="ALWAYS" />
+  </rowConstraints>
+   <children>
+      <Label fx:id="filePath" text="File Path" GridPane.columnIndex="1" />
+      <AnchorPane GridPane.columnIndex="1" GridPane.rowIndex="1">
          <children>
-            <HBox prefHeight="200.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
-               <children>
-                  <VBox>
-                     <children>
-                        <Label text="Ours" />
-                        <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="200.0" VBox.vgrow="ALWAYS">
-                           <content>
-                              <Label fx:id="ourVersion" text="Our" />
-                           </content>
-                        </ScrollPane>
-                     </children>
-                  </VBox>
-                  <VBox>
-                     <children>
-                        <Label text="Theirs" />
-                        <ScrollPane fitToHeight="true" fitToWidth="true" minWidth="-Infinity" prefWidth="200.0" VBox.vgrow="ALWAYS">
-                           <content>
-                              <Label fx:id="theirVersion" text="Their" />
-                           </content>
-                        </ScrollPane>
-                     </children>
-                  </VBox>
-                  <VBox>
-                     <children>
-                        <Label text="Fathers" />
-                        <ScrollPane fitToHeight="true" fitToWidth="true" prefWidth="200.0" VBox.vgrow="ALWAYS">
-                           <content>
-                              <Label fx:id="fatherVersion" text="Father" />
-                           </content>
-                        </ScrollPane>
-                     </children>
-                  </VBox>
-               </children>
-            </HBox>
-            <ScrollPane prefHeight="250.0">
-               <content>
-                  <TextArea fx:id="yourVersion" prefHeight="250.0" prefWidth="600.0" />
-               </content>
-            </ScrollPane>
-            <HBox>
-               <children>
-                  <Button fx:id="oursBtn" mnemonicParsing="false" onAction="#insertOurs" text="Choose Ours" />
-                  <Button fx:id="theirsBtn" mnemonicParsing="false" onAction="#insertTheirs" text="Choose Theirs" />
-                  <Button fx:id="fatherBtn" mnemonicParsing="false" onAction="#insertFather" text="Choose Fathers" />
-                  <Button fx:id="yourBtn" mnemonicParsing="false" onAction="#insertYours" text="Choose Yours" />
-               </children>
-            </HBox>
+            <Label fx:id="ourLabel" alignment="CENTER" layoutX="68.0" layoutY="1.0" text="Our Version" GridPane.columnIndex="1" GridPane.rowIndex="1" />
          </children>
-      </VBox>
-   </content>
-</ScrollPane>
+      </AnchorPane>
+      <TextArea fx:id="ourVersion" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+      <AnchorPane GridPane.columnIndex="2" GridPane.rowIndex="1">
+         <children>
+            <Label fx:id="theirLabel" layoutX="65.0" layoutY="1.0" text="Their Version" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+         </children>
+      </AnchorPane>
+      <TextArea fx:id="theirVersion" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+      <AnchorPane GridPane.columnIndex="3" GridPane.rowIndex="1">
+         <children>
+            <Label fx:id="fatherLabel" layoutX="58.0" layoutY="1.0" text="Father's Version" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+         </children>
+      </AnchorPane>
+      <TextArea fx:id="fatherVersion" editable="false" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+      <TextArea fx:id="yourVersion" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" />
+      <AnchorPane GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+         <children>
+            <Button fx:id="oursBtn" layoutX="58.0" mnemonicParsing="false" onAction="#insertOurs" text="Choose Ours" GridPane.rowIndex="3" />
+         </children>
+      </AnchorPane>
+      <AnchorPane GridPane.columnIndex="2" GridPane.rowIndex="3">
+         <children>
+            <Button fx:id="theirsBtn" layoutX="55.0" mnemonicParsing="false" onAction="#insertTheirs" text="Choose Theirs" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+         </children>
+      </AnchorPane>
+      <AnchorPane GridPane.columnIndex="3" GridPane.rowIndex="3">
+         <children>
+            <Button fx:id="fatherBtn" layoutX="68.0" mnemonicParsing="false" onAction="#insertFather" text="Choose Fathers" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+         </children>
+      </AnchorPane>
+      <GridPane styleClass="Background" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4">
+         <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
+            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="ALWAYS" />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+         <children>
+            <Button fx:id="yourBtn" alignment="CENTER" contentDisplay="CENTER" layoutY="188.0" mnemonicParsing="false" onAction="#insertYours" text="Choose Yours" GridPane.rowIndex="4" />
+            <Button fx:id="deleteBtn" alignment="CENTER_RIGHT" layoutX="128.0" layoutY="188.0" mnemonicParsing="false" onAction="#deleteFile" text="Delete File" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+         </children>
+      </GridPane>
+      <AnchorPane GridPane.rowIndex="1">
+         <children>
+            <Label layoutX="26.0" layoutY="1.0" text="Conflicts:" GridPane.rowIndex="1" />
+         </children>
+      </AnchorPane>
+      <ListView fx:id="conflictsList" onMouseClicked="#setResolvingConflict" prefHeight="200.0" prefWidth="200.0" styleClass="Background" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.rowSpan="3" />
+      <Label text="Current Conflict:" />
+   </children>
+</GridPane>

@@ -2,6 +2,7 @@ package appManager;
 
 
 import XMLgenerated.*;
+import XMLgenerated.MagitRepository.MagitRemoteReference;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -13,23 +14,46 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 public class XmlRepo {
 
+    private List<MagitSingleBranch> localBranches;
+    private List<MagitSingleBranch> remoteBranches;
+    private List<MagitSingleBranch> remoteTrackingBranches;
+
+
     private MagitRepository repository;
-    private MagitBranches branches;
+    private MagitBranches allBranches;
     private MagitCommits commits;
     private MagitFolders folders;
     private MagitBlobs blobs;
+    private MagitRemoteReference remoteReference;
+
+    public MagitRemoteReference getRemoteReference() {
+        return remoteReference;
+    }
+
+    public List<MagitSingleBranch> getLocalBranches() {
+        return localBranches;
+    }
+
+    public List<MagitSingleBranch> getRemoteBranches() {
+        return remoteBranches;
+    }
+
+    public List<MagitSingleBranch> getRemoteTrackingBranches() {
+        return remoteTrackingBranches;
+    }
 
     public MagitRepository getRepository() {
         return repository;
     }
 
-    public MagitBranches getBranches() {
-        return branches;
+    public MagitBranches getAllBranches() {
+        return allBranches;
     }
 
     public MagitCommits getCommits() {
@@ -45,6 +69,9 @@ public class XmlRepo {
     }
 
     public XmlRepo(String xmlPath) throws FileNotFoundException {
+        this.remoteTrackingBranches = new LinkedList<>();
+        this.remoteBranches = new LinkedList<>();
+        this.localBranches = new LinkedList<>();
         try {
             validatePath(xmlPath);
             File file = new File(xmlPath);
@@ -53,13 +80,29 @@ public class XmlRepo {
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
             MagitRepository repo = (MagitRepository) jaxbUnmarshaller.unmarshal(file);
             this.repository = repo;
-            this.branches = repo.getMagitBranches();
+            this.allBranches = repo.getMagitBranches();
             this.commits = repo.getMagitCommits();
             this.folders = repo.getMagitFolders();
             this.blobs = repo.getMagitBlobs();
+            this.remoteReference = repo.getMagitRemoteReference();
+            createBranchesLists();
         } catch (JAXBException e) {
             e.printStackTrace();
         }
+    }
+
+    private void createBranchesLists() {
+        List<MagitSingleBranch> branchesList = allBranches.getMagitSingleBranch();
+        for (MagitSingleBranch b : branchesList) {
+            if (b.isTracking())
+                remoteTrackingBranches.add(b);
+            else if (b.isIsRemote())
+                remoteBranches.add(b);
+            else
+                localBranches.add(b);
+
+        }
+
     }
 
     private void validatePath(String xmlPath) throws FileNotFoundException {
@@ -75,6 +118,7 @@ public class XmlRepo {
         Map<String, Boolean> blobsIds = new HashMap();
         Map<String, Boolean> commitsIds = new HashMap();
         Map<String, Boolean> branchNames = new HashMap();
+        checkIfRemoteLegal();
         MagitBlobs blobs = repo.getMagitBlobs();
         MagitFolders folders = repo.getMagitFolders();
         MagitCommits commits = repo.getMagitCommits();
@@ -86,6 +130,14 @@ public class XmlRepo {
         validateBranches(branches, commitsIds, branchNames);
     }
 
+    private void checkIfRemoteLegal() {
+        if (remoteReference != null) {
+            if (remoteReference.getLocation() != null)
+                if (!appManager.isMagitRepo(remoteReference.getLocation()))
+                    throw new UnsupportedOperationException("You are trying to load a repository that is remote to: " + remoteReference.getLocation() + "\nThis path is not a MAGit repository.\nOperation terminated");
+        }
+    }
+
     private void validateBranches(MagitBranches branches, Map<String, Boolean> commitsIds, Map<String, Boolean> branchNames) {
         List<MagitSingleBranch> branchesLst = branches.getMagitSingleBranch();
         if (!branchNames.containsKey(branches.getHead()))
@@ -93,7 +145,30 @@ public class XmlRepo {
         for (MagitSingleBranch b : branchesLst) {
             if (!commitsIds.containsKey(b.getPointedCommit().getId()))
                 throw new UnsupportedOperationException("MagitSingleBranch: " + b.getName() + " points to MagitSingleCommit that doesn't exist: " + b.getPointedCommit().getId());
+            if (b.isTracking()) {
+                if (!branchNames.containsKey(b.getTrackingAfter()))
+                    throw new UnsupportedOperationException("MagitSingleBranch: " + b.getName() + " tracking after MagitSingleCommit that doesn't exist: " + b.getTrackingAfter());
+                else {
+                    if (!branchIsRemote(b.getName()))
+                        throw new UnsupportedOperationException("MagitSingleBranch: " + b.getName() + " tracking after MagitSingleCommit that is not remote: " + b.getTrackingAfter());
+                }
+            }
         }
+    }
+
+    private boolean branchIsRemote(String name) {
+        String compareName = getRemoteName(remoteReference) + "\\" + name;
+        for (MagitSingleBranch b : remoteBranches) {
+            if (b.getName().equals(compareName))
+                return b.isIsRemote();
+        }
+        return false;
+    }
+
+    private String getRemoteName(MagitRemoteReference remoteReference) {
+        if (remoteReference == null) return "";
+        if (remoteReference.getLocation() == null) return "";
+        return Paths.get(remoteReference.getLocation()).getFileName().toString();
     }
 
     private void validateCommits(List<MagitSingleCommit> commits, Map<String, Boolean> folderIds) {

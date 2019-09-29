@@ -6,31 +6,33 @@ import com.fxgraph.edges.Edge;
 import com.fxgraph.graph.Graph;
 import com.fxgraph.graph.ICell;
 import com.fxgraph.graph.Model;
-import com.fxgraph.graph.PannableCanvas;
 import commitTree.layout.CommitTreeLayout;
 import commitTree.node.CommitNode;
+import commitTree.node.CommitNodeController;
 import common.Consts;
-import common.ExceptionHandler;
 import common.QuestionConsts;
 import components.FileView;
-import components.singleBranch.SingleBranchController;
-import components.singleCommit.SingleCommitController;
+import dialogs.CloneController;
+import dialogs.CommitDataController;
 import dialogs.ConflictsController;
 import dialogs.newRepoController;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -39,23 +41,23 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import puk.team.course.magit.ancestor.finder.AncestorFinder;
 import tasks.deployXmlTask;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.*;
 
-import static appManager.Commit.createMergedCommit;
-import static appManager.Commit.getPrevCommits;
-import static appManager.ZipHandler.unzipFileToString;
-import static appManager.ZipHandler.unzipFolderToCompList;
-import static appManager.appManager.commitSha1ToHeadFolderFilesList;
+import static appManager.Commit.*;
+import static appManager.ZipHandler.*;
+import static appManager.appManager.*;
+import static common.ExceptionHandler.ALERT;
 import static common.ExceptionHandler.showExceptionDialog;
 import static common.QuestionConsts.askForYesNo;
 
@@ -70,42 +72,13 @@ public class MAGitController {
     @FXML
     private Label headBranchLabel;
     @FXML
-    private MenuButton repoActions;
-    @FXML
-    private MenuItem repoLoadXml;
-    @FXML
-    private MenuItem repoInitEmpty;
-    @FXML
-    private MenuItem repoSwitch;
-    @FXML
-    private MenuButton branchActions;
-    @FXML
-    private MenuItem branchShowAll;
-    @FXML
-    private MenuItem branchCreateNew;
-    @FXML
-    private MenuItem branchDelete;
-    @FXML
-    private MenuItem branchCheckout;
-    @FXML
-    private MenuItem branchReset;
-    @FXML
-    private ScrollPane branchesScrollPane;
-    @FXML
-    private ScrollPane commitsScrollPane;
-    @FXML
-    private Button commitTreeBtn;
-    @FXML
     private Button commitBtn;
     @FXML
     private Button homeBtn;
     @FXML
     private MenuItem openInExplorerItem;
-    @FXML
-    private VBox branchesVbox;
-    @FXML
-    private VBox commitsVbox;
 
+    public static String CSS_PATH = null;
     public static MAGitController mainController;
     private SimpleStringProperty repoNameProp;
     private SimpleStringProperty repoPathProp;
@@ -113,6 +86,7 @@ public class MAGitController {
     private SimpleStringProperty branchNameProp;
     private SimpleBooleanProperty isRepoLoaded;
     private SimpleBooleanProperty isCleanState;
+    private SimpleBooleanProperty isRemoteRepo;
     private List<Branch> branchList;
     private Tooltip repoLocationTooltip;
 
@@ -125,37 +99,122 @@ public class MAGitController {
     @FXML
     private TreeView WcInfoList;
     @FXML
-    private Label textPlace;
+    private TextArea textPlace;
+    @FXML
+    private ScrollPane commitTree;
+    @FXML
+    private Menu checkoutToAction;
+    @FXML
+    private Menu mergeWithAction;
+    @FXML
+    private Menu deleteBranchAction;
+    @FXML
+    private Menu branchActions;
+    @FXML
+    private MenuItem cloneOption;
+    @FXML
+    private MenuItem fetchOption;
+    @FXML
+    private MenuItem pullOption;
+    @FXML
+    private MenuItem pushOption;
+    private Graph treeContent;
+    @FXML
+    private Menu markBranchAction;
+
 
     public static String getFileDataFromSha1(String sha1) {
         return appManager.getFileDataFromSha1(sha1);
     }
 
+    public static String stringToSha1(String text) {
+        return appManager.stringToSha1(text);
+    }
 
-    public void showBranchCommits(String branchName) throws IOException {
-        SingleBranchController b = new SingleBranchController();
-        VBox target = MAGitController.mainController.getCommitsVbox();
-        target.getChildren().clear();
-        b.setCommitList(appManager.manager.branchHistoryToListByCommitSha1(Branch.getCommitSha1ByBranchName(branchName)));
-        for (Commit.commitComps c : b.getCommitList()) {
-            FXMLLoader loader = new FXMLLoader();
-            URL url = getClass().getResource("../singleCommit/singleCommit.fxml");
-            loader.setLocation(url);
-            Node singleCommit = loader.load();
-            SingleCommitController singleCommitController = loader.getController();
-            singleCommitController.setNoteProp(c.getNote());
-            singleCommitController.setAuthorProp("By: " + c.getAuthor());
-            singleCommitController.setSha1Prop(c.getSha1());
-            singleCommitController.getCommitBtn().setTooltip(new Tooltip(c.getNote()));
-            target.getChildren().add(singleCommit);
+    public static void createAndZipNewFile(String text, String name) {
+        File newFile = appManager.createFileRepresentation(text, name);
+        try {
+            zipFile(newFile, MAGitController.stringToSha1(text), PathConsts.OBJECTS_FOLDER());
+        } catch (IOException e) {
+            showExceptionDialog(e);
+            return;
         }
     }
 
+    public void showCommitData(CommitNodeController commitNodeController) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/dialogs/CommitDataDialog.fxml"));
+        Parent parent = fxmlLoader.load();
+        CommitDataController controller = fxmlLoader.getController();
+        Scene scene = new Scene(parent);
+        Stage stage = new Stage();
+        controller.setPrimaryStage(stage);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        setTheme(scene);
 
-    public VBox getBranchesVbox() {
-        return branchesVbox;
+        List<String> prevCommits = getPrevCommitsBySha1(commitNodeController.getSha1());
+        DiffHandler diff = new DiffHandler();
+        if (prevCommits.size() == 0) {
+            controller.setFirstSha1Exists(false);
+            controller.setSecSha1Exists(false);
+        } else if (prevCommits.size() == 1) {
+            controller.setFirstSha1Exists(true);
+            controller.setSecSha1Exists(false);
+            controller.setFirstSha1Prop(prevCommits.get(0));
+            diff.createModifiedFilesListsBetween2FolderSha1(Commit.getCommitRootFolderSha1(prevCommits.get(0)), Commit.getCommitRootFolderSha1(commitNodeController.getSha1()));
+            controller.setDiff1(diff);
+        } else if (prevCommits.size() == 2) {
+            DiffHandler diff2 = new DiffHandler();
+            controller.setFirstSha1Exists(true);
+            controller.setSecSha1Exists(true);
+            controller.setFirstSha1Prop(prevCommits.get(0));
+            controller.setSecSha1Prop(prevCommits.get(1));
+            diff.createModifiedFilesListsBetween2FolderSha1(Commit.getCommitRootFolderSha1(prevCommits.get(0)), Commit.getCommitRootFolderSha1(commitNodeController.getSha1()));
+            diff2.createModifiedFilesListsBetween2FolderSha1(Commit.getCommitRootFolderSha1(prevCommits.get(1)), Commit.getCommitRootFolderSha1(commitNodeController.getSha1()));
+            controller.setDiff1(diff);
+            controller.setDiff2(diff2);
+        }
+        controller.setSha1Prop(commitNodeController.getSha1());
+        controller.setAuthorProp(commitNodeController.getCommitterLabel().getText());
+        controller.setNoteProp(commitNodeController.getMessageLabel().getText());
+        controller.setDateProp(commitNodeController.getCommitTimeStampLabel().getText());
+        stage.showAndWait();
     }
 
+    public static void setTheme(Scene s) {
+        s.getStylesheets().clear();
+        s.getRoot().getStyleClass().add("Background");
+        if (CSS_PATH != null)
+            s.getStylesheets().add(CSS_PATH);
+
+    }
+
+    public static void setTheme(Alert a) {
+        a.getDialogPane().getStylesheets().clear();
+        a.getDialogPane().getStyleClass().add("Background");
+        if (MAGitController.mainController.CSS_PATH != null) {
+            a.getDialogPane().getStylesheets().add(MAGitController.mainController.CSS_PATH);
+        }
+    }
+
+//    public void showBranchCommits(String branchName) throws IOException {
+//        SingleBranchController b = new SingleBranchController();
+//        VBox target = MAGitController.mainController.getCommitsVbox();
+//        target.getChildren().clear();
+//        b.setCommitList(appManager.manager.branchHistoryToListByCommitSha1(Branch.getCommitSha1ByBranchName(branchName)));
+//        for (Commit.commitComps c : b.getCommitList()) {
+//            FXMLLoader loader = new FXMLLoader();
+//            URL url = getClass().getResource("../singleCommit/singleCommit.fxml");
+//            loader.setLocation(url);
+//            Node singleCommit = loader.load();
+//            SingleCommitController singleCommitController = loader.getController();
+//            singleCommitController.setNoteProp(c.getNote());
+//            singleCommitController.setAuthorProp("By: " + c.getAuthor());
+//            singleCommitController.setSha1Prop(c.getSha1());
+//            singleCommitController.getCommitBtn().setTooltip(new Tooltip(c.getNote()));
+//            target.getChildren().add(singleCommit);
+//        }
+//    }
 
     public MAGitController() {
         mainController = this;
@@ -168,8 +227,10 @@ public class MAGitController {
         branchList = new LinkedList<>();
         isRepoLoaded = new SimpleBooleanProperty(false);
         isCleanState = new SimpleBooleanProperty(true);
+        isRemoteRepo = new SimpleBooleanProperty(false);
         repoLocationTooltip = new Tooltip();
         WcInfoList = new TreeView();
+        treeContent = null;
     }
 
     @FXML
@@ -183,12 +244,15 @@ public class MAGitController {
         openInExplorerItem.disableProperty().bind(isRepoLoaded.not());
         commitBtn.disableProperty().bind(isCleanState.or(isRepoLoaded.not()));
         repoLocationLabel.setTooltip(repoLocationTooltip);
+        fetchOption.disableProperty().bind(isRemoteRepo.not());
+        pushOption.disableProperty().bind(isRemoteRepo.not());
+        pullOption.disableProperty().bind(isRemoteRepo.not());
         WcInfoList.setRoot(new TreeItem("root"));
     }
 
     @FXML
     private void initEmptyRepo() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../../dialogs/newRepoDialog.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/dialogs/newRepoDialog.fxml"));
         Parent parent = fxmlLoader.load();
         newRepoController controller = fxmlLoader.getController();
         Scene scene = new Scene(parent, 361, 206);
@@ -196,24 +260,34 @@ public class MAGitController {
         controller.setPrimaryStage(stage);
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
+        setTheme(scene);
         stage.showAndWait();
-        updateUiRepoLabels();
-        showWcStatus();
+        updateUI();
     }
 
-    public void updateUiRepoLabels() {
+    public void updateUI() {
         if (appManager.workingPath == null) return;
         try {
+            String repoPath = isRemoteRepo() ?
+                    (appManager.workingPath + "\nRemote: " + getRemotePath()) :
+                    String.valueOf(appManager.workingPath);
             isRepoLoaded.set(true);
-            repoPathProp.set(String.valueOf(appManager.workingPath));
+            repoPathProp.set(repoPath);
             repoNameProp.set(String.valueOf(appManager.workingPath.getName(appManager.workingPath.getNameCount() - 1)));
             branchNameProp.set(manager.getHeadBranchName());
-            branchesVbox.getChildren().clear();
-            getCommitsVbox().getChildren().clear();
-            showAllBranches(null);
+            setRemoteOptions();
+            showCommitTree();
+            showWcStatus();
         } catch (Exception ex) {
             showExceptionDialog(ex);
         }
+    }
+
+    private void setRemoteOptions() {
+        if (appManager.isRemoteRepo())
+            isRemoteRepo.set(true);
+        else
+            isRemoteRepo.set(false);
     }
 
     public static TextInputDialog setNewDialog(String title, String headerText, String contentText) {
@@ -221,6 +295,11 @@ public class MAGitController {
         dialog.setTitle(title);
         dialog.setHeaderText(headerText);
         dialog.setContentText(contentText);
+        dialog.getDialogPane().getStylesheets().clear();
+        if (MAGitController.mainController.CSS_PATH != null) {
+            dialog.getDialogPane().getStyleClass().add("Background");
+            dialog.getDialogPane().getStylesheets().add(MAGitController.mainController.CSS_PATH);
+        }
         return dialog;
     }
 
@@ -249,28 +328,28 @@ public class MAGitController {
                         //System.out.println("Loading XML...");
                         manager.deleteRepository(location);
                         manager.deployXml(xmlRepo);
-                        updateUiRepoLabels();
+                        updateUI();
                         //System.out.println("Done!");
 
                     } else {
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setHeaderText("XML loading terminated\nmoving to " + Paths.get(location));
-                        alert.showAndWait();
+                        setTheme(alert);
+                        alert.show();
                         manager.switchRepo(location);
-                        updateUiRepoLabels();
+                        updateUI();
                     }
                 } else {
                     showExceptionDialog(new UnsupportedOperationException("the target folder in this XML '" + Paths.get(location) + "' is not supported by MAGit\nOperation terminated"));
                 }
             } else if (Files.notExists(Paths.get(xmlRepo.getRepository().getLocation()))) {
-                //System.out.println("Loading XML...");
-//                deployXml(xmlRepo);
                 manager.deployXml(xmlRepo);
-                updateUiRepoLabels();
-                //System.out.println("Done!");
+                updateUI();
             } else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setHeaderText("Target location " + Paths.get(xmlRepo.getRepository().getLocation()) + "does not belong to MAGit. Loading terminated.");
+                setTheme(alert);
+                alert.show();
             }
             showWcStatus();
         } catch (Exception e) {
@@ -299,52 +378,70 @@ public class MAGitController {
         if (f == null) return;
         try {
             manager.switchRepo(f.getAbsolutePath());
-            updateUiRepoLabels();
-            showWcStatus();
+            updateUI();
         } catch (Exception e) {
             showExceptionDialog(e);
         }
     }
 
     @FXML
-    private void showAllBranches(ActionEvent actionEvent) throws IOException {
-        branchesVbox.getChildren().clear();
-        branchList = Branch.allBranchesToList();
-        for (Branch b : branchList) {
-            FXMLLoader loader = new FXMLLoader();
-            URL url = getClass().getResource("../singleBranch/singleBranch.fxml");
-            loader.setLocation(url);
-            Node singleBranch = loader.load();
-            SingleBranchController singleBranchController = loader.getController();
-            singleBranchController.setNameProp(b.getName());
-            branchesVbox.getChildren().add(singleBranch);
-        }
+    private void showAllBranches(ActionEvent actionEvent) {
+        List<Branch> branches = Branch.allBranchesToList();
+        List<String> local = new LinkedList<>();
+        List<String> remote = new LinkedList<>();
+        List<String> rtb = new LinkedList<>();
+        getBranchNames(branches, local, remote, rtb);
+        if (WcInfoList.getRoot() != null)
+            WcInfoList.getRoot().getChildren().clear();
+        addToModifiedListView(local, "LOCAL", WcInfoList);
+        addToModifiedListView(remote, "REMOTE", WcInfoList);
+        addToModifiedListView(rtb, "REMOTE-TRACKING", WcInfoList);
     }
 
-    public VBox getCommitsVbox() {
-        return commitsVbox;
+    private void getBranchNames(List<Branch> branches, List<String> local, List<String> remote, List<String> rtb) {
+        List<String> out = new LinkedList<>();
+        for (Branch b : branches) {
+            if (b.getName().equals("HEAD")) continue;
+            if (b.isRemote())
+                remote.add(b.getName());
+            else if (b.checkRTB())
+                rtb.add(b.getName());
+            else
+                local.add(b.getName());
+        }
+        Collections.sort(out);
     }
 
     @FXML
-    private void createNewBranch(ActionEvent actionEvent) {
+    private String createNewBranch(ActionEvent actionEvent) {
         TextInputDialog dialog = setNewDialog("Create new branch", "Enter a name for the new branch", "");
         dialog.showAndWait();
         appManager.manager.createNewBranch(dialog.getResult());
-        try {
-            if (askForYesNo(QuestionConsts.ASK_CHECKOUT)) {
-                DiffHandler diff;
-                diff = manager.getDiff();
-                if (!appManager.isCleanState(diff)) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setHeaderText("This repository is not in \"Clean State\"\nCheckout was not preformed");
-                } else {
-                    manager.makeCheckOut(dialog.getResult());
-                }
+        if (actionEvent != null) {
+            if (Branch.doesBranchExists(Branch.allBranchesToList(), dialog.getResult())) {
+                showExceptionDialog(new UnsupportedOperationException(dialog.getResult() + " already exists"));
+                return null;
             }
-            updateUiRepoLabels();
-        } catch (Exception ex) {
-            showExceptionDialog(ex);
+            try {
+                if (askForYesNo(QuestionConsts.ASK_CHECKOUT)) {
+                    DiffHandler diff;
+                    diff = manager.getDiff();
+                    if (!appManager.isCleanState(diff)) {
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setHeaderText("This repository is not in \"Clean State\"\nCheckout was not preformed");
+                        setTheme(alert);
+                        alert.show();
+                    } else {
+                        manager.makeCheckOut(dialog.getResult());
+                        updateUI();
+                    }
+                }
+//                updateUI();
+            } catch (Exception ex) {
+                showExceptionDialog(ex);
+            }
         }
+        return dialog.getResult();
     }
 
     @FXML
@@ -379,22 +476,22 @@ public class MAGitController {
         textPlace.setText("This repository is dirty...\nThere are local changes");
         if (WcInfoList.getRoot() != null)
             WcInfoList.getRoot().getChildren().clear();
-        addToModifiedListView(diff.getCreated(), "CREATED");
-        addToModifiedListView(diff.getChanged(), "CHANGED");
-        addToModifiedListView(diff.getDeleted(), "REMOVED");
+        addToModifiedListView(diff.getCreated(), "CREATED", WcInfoList);
+        addToModifiedListView(diff.getChanged(), "CHANGED", WcInfoList);
+        addToModifiedListView(diff.getDeleted(), "REMOVED", WcInfoList);
     }
 
-    private void addToModifiedListView(List<String> lst, String title) {
+    public static void addToModifiedListView(List<String> lst, String title, TreeView tree) {
         if (lst.size() == 0) return;
         TreeItem root = new TreeItem(title);
         for (String s : lst) {
             TreeItem newItem = new TreeItem(s, getModificationIcon(title));
             root.getChildren().add(newItem);
         }
-        WcInfoList.getRoot().getChildren().add(root);
+        tree.getRoot().getChildren().add(root);
     }
 
-    private ImageView getModificationIcon(String title) {
+    private static ImageView getModificationIcon(String title) {
         Image newImage;
         ImageView outImage;
         switch (title) {
@@ -402,8 +499,7 @@ public class MAGitController {
                 newImage = new Image(Consts.PLUS_SIGN, 16, 16, true, false);
                 break;
             case "CHANGED":
-//                newImage = new Image(Consts.DOT_SIGN, 16, 16, true, false);
-                newImage = new Image(getClass().getResourceAsStream(Consts.DOT_SIGN), 16, 16, true, false);
+                newImage = new Image(Consts.DOT_SIGN, 16, 16, true, false);
                 break;
             case "REMOVED":
                 newImage = new Image(Consts.MINUS_SIGN, 16, 16, true, false);
@@ -415,7 +511,7 @@ public class MAGitController {
                 newImage = new Image(Consts.FOLDER_ICON, 16, 16, true, false);
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + title);
+                return null;
         }
         outImage = new ImageView(newImage);
         return outImage;
@@ -431,8 +527,7 @@ public class MAGitController {
         } catch (Exception e) {
             showExceptionDialog(e);
         }
-        showBranchCommits(branchNameProp.getValue());
-        showWcStatus();
+        updateUI();
     }
 
     public List<String> getCommitRep(String sha1) {
@@ -482,10 +577,9 @@ public class MAGitController {
                 makeCommit(null);
         try {
             manager.makeCheckOut(branchName);
-            mainController.updateUiRepoLabels();
-            mainController.showWcStatus();
+            updateUI();
         } catch (Exception ex) {
-            ExceptionHandler.showExceptionDialog(ex);
+            showExceptionDialog(ex);
         }
     }
 
@@ -494,9 +588,50 @@ public class MAGitController {
         List<Commit.commitComps> allCommits = manager.getAllCommits();
         addCommitsToGraph(tree, allCommits);
         addEdgesToGraph(tree);
+        addBranchesToGraph(tree);
         tree.endUpdate();
         setTreePositioning(tree.getModel(), Branch.allBranchesToList());
+        this.treeContent = tree;
         showTreeDialog(tree);
+    }
+
+    private void addBranchesToGraph(Graph tree) {
+        Map<String, List<Branch>> branchesHeads = new HashMap<>();
+        Map<String, List<Branch>> remoteBranchesHeads = new HashMap<>();
+        Model model = tree.getModel();
+        List<Branch> branches = Branch.allBranchesToList();
+        for (Branch b : branches) {
+            if (b.getName().equals("HEAD")) continue;
+            if (b.isRemote()) {
+                if (!remoteBranchesHeads.containsKey(b.getCommitSha1()))
+                    remoteBranchesHeads.put(b.getCommitSha1(), new LinkedList<Branch>());
+                remoteBranchesHeads.get(b.getCommitSha1()).add(b);
+            } else {
+                if (!branchesHeads.containsKey(b.getCommitSha1()))
+                    branchesHeads.put(b.getCommitSha1(), new LinkedList<Branch>());
+                branchesHeads.get(b.getCommitSha1()).add(b);
+            }
+        }
+        for (ICell cell : model.getAllCells()) {
+            CommitNode commitNode = (CommitNode) cell;
+            if (branchesHeads.containsKey(commitNode.getSha1())) {
+                for (Branch b : branchesHeads.get(commitNode.getSha1()))
+                    commitNode.setBranch(b.getName());
+            }
+            if (remoteBranchesHeads.containsKey(commitNode.getSha1()))
+                for (Branch b : remoteBranchesHeads.get(commitNode.getSha1()))
+                    commitNode.setRemoteBranch(b.getName());
+        }
+    }
+
+    @FXML
+    private void markTree(ActionEvent actionEvent) {
+        if (treeContent == null) return;
+        Model model = treeContent.getModel();
+        for (ICell cell : model.getAllCells()) {
+            CommitNode commitNode = (CommitNode) cell;
+            commitNode.mark();
+        }
     }
 
     private void addEdgesToGraph(Graph tree) {
@@ -526,10 +661,12 @@ public class MAGitController {
         try {
             tree.layout(new CommitTreeLayout());
             showGraph(tree);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            showExceptionDialog(ex);
+            return;
         }
     }
+
 
     private void addCommitsToGraph(Graph tree, List<Commit.commitComps> allCommits) {
         List<Commit.commitComps> reversedAllCommits = new LinkedList<>(allCommits);
@@ -544,20 +681,29 @@ public class MAGitController {
     }
 
     private void setTreePositioning(Model model, List<Branch> branchesTreeOrdered) {
+        List<String> usedSha1 = new LinkedList<>();
         for (ICell cell : model.getAllCells()) {
-            boolean found = false;
             CommitNode commitNode = (CommitNode) cell;
             for (int i = 0; i < branchesTreeOrdered.size(); i++) {
-                List<Commit.commitComps> commits = Branch.getAllCommits(branchesTreeOrdered.get(i).getName());
+                List<Commit.commitComps> commits = Branch.getAllCommits(branchesTreeOrdered.get(i));
                 for (Commit.commitComps c : commits) {
                     if (c.getSha1().equals(commitNode.getSha1())) {
-                        commitNode.setPos(i);
-                        found = true;
-                        break;
+                        if (usedSha1.contains(c.getSha1()))
+                            commitNode.setPos(i);
+                        else {
+                            usedSha1.add(c.getSha1());
+                            commitNode.setPos(i);
+                            break;
+                        }
                     }
                 }
-                if (found) break;
             }
+        }
+        //initial commit is always pos(0)
+        if (model.getAllCells().size() > 0) {
+            ICell firstCommit = model.getAllCells().get(model.getAllCells().size() - 1);
+            CommitNode node = (CommitNode) firstCommit;
+            node.setPos(0);
         }
     }
 
@@ -569,61 +715,110 @@ public class MAGitController {
     }
 
     private void showGraph(Graph tree) throws Exception {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        URL url = getClass().getResource("/commitTree/commitTree.fxml");
-        fxmlLoader.setLocation(url);
-        ScrollPane scrollPane = fxmlLoader.load(url.openStream());
-
-        final Scene scene = new Scene(scrollPane, 700, 400);
-        Stage stage = new Stage();
-        PannableCanvas canvas = tree.getCanvas();
-        scrollPane.setContent(canvas);
-
+        commitTree.setContent(tree.getCanvas());
         Platform.runLater(() -> {
             tree.getUseNodeGestures().set(false);
             tree.getUseViewportGestures().set(false);
         });
-
-        stage.initModality(Modality.WINDOW_MODAL);
-        stage.setScene(scene);
-        stage.showAndWait();
     }
 
-    public void mergeBranch(String branchName) throws IOException {
-        if (Branch.isBranchActive(branchName)) {
-            showExceptionDialog(new UnsupportedOperationException("Cannot merge with the active branch"));
-            return;
+    public void mergeBranch(String branchName, boolean pullMerge) throws IOException {
+        if (!pullMerge) {
+            if (Branch.isBranchActive(branchName)) {
+                showExceptionDialog(new UnsupportedOperationException("Cannot merge with the active branch"));
+                return;
+            }
+            DiffHandler diff = manager.getDiff();
+            if (!manager.isCleanState(diff)) {
+                showExceptionDialog(new UnsupportedOperationException("Local changes apply\nPlease commit and try again\n\nOperation terminated."));
+                return;
+            }
         }
-        DiffHandler diff = manager.getDiff();
-        if (!manager.isCleanState(diff)) {
-            showExceptionDialog(new UnsupportedOperationException("Local changes apply\nPlease commit and try again\n\nOperation terminated."));
+        String oursCommitSha1 = Branch.getCommitSha1ByBranchName(Branch.getActiveBranch());
+        String theirCommitSha1 = Branch.getCommitSha1ByBranchName(branchName);
+        String commonFatherSha1 = getCommonFatherSha1(oursCommitSha1, theirCommitSha1);
+        if (pullMerge)
+            theirCommitSha1 = getRRBranchOriginalSha1ByName(getRemotePath(), branchName);
+        try {
+            if (checkForFFMerge(oursCommitSha1, theirCommitSha1, commonFatherSha1)) {
+                if (pullMerge)
+                    Branch.changeBranchPointedCommit(branchName, theirCommitSha1, true);
+                Branch.changeBranchPointedCommit(Branch.getActiveBranch(), theirCommitSha1, false);
+//              preformFFMerge(theirCommitSha1, oursCommitSha1, branchName);
+                manager.makeCheckOut(Branch.getActiveBranch());
+                updateUI();
+                return;
+            }
+        } catch (Exception e) {
+            showExceptionDialog(e);
             return;
         }
         TextInputDialog dialog = setNewDialog("Merging Commit", "Merging commit to: " + manager.getHeadBranchName() + "\nEnter note:", "");
         dialog.showAndWait();
         if (dialog.getResult() == null) return;
-
-        String oursCommitSha1 = Branch.getCommitSha1ByBranchName(Branch.getActiveBranch());
-        String theirCommitSha1 = Branch.getCommitSha1ByBranchName(branchName);
-        String commonFatherSha1 = getCommonFatherSha1(oursCommitSha1, theirCommitSha1);
+        Commit newCommit = new Commit(dialog.getResult(), usernameProp.getValue());
         MergeHandler mergeHandler = new MergeHandler();
         mergeHandler.getMergedHeadFolderAndSaveFiles(commitSha1ToHeadFolderFilesList(oursCommitSha1), commitSha1ToHeadFolderFilesList(theirCommitSha1), commitSha1ToHeadFolderFilesList(commonFatherSha1), appManager.workingPath);
-        resolveConflicts(mergeHandler);
-        createMergedCommit(manager, dialog.getResult(), usernameProp.getValue(), branchName, mergeHandler);
-
-        showBranchCommits(branchNameProp.getValue());
-        showWcStatus();
-    }
-
-    private void resolveConflicts(MergeHandler mergeHandler) throws IOException {
-        for (MergeHandler.Conflict c : mergeHandler.getConflicts()) {
-            resolveSingleConflict(c, mergeHandler);
+        resolveConflicts(mergeHandler, newCommit.getAuthor(), newCommit.getDateCreated());
+        if (mergeHandler.getConflicts().size() > 0) {
+            showExceptionDialog(new UnsupportedOperationException("You did not resolve all of the conflicts\nOperation Terminated"));
+            return;
         }
-
+        deployAndRemoveMergedFiles(mergeHandler.getFilesToAdd(), mergeHandler.getFilesToRemove());
+        createMergedCommit(manager, newCommit, branchName, mergeHandler);
+        updateUI();
     }
 
-    private void resolveSingleConflict(MergeHandler.Conflict c, MergeHandler mergeHandler) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../../dialogs/conflictsDialog.fxml"));
+    private String getHeadBranchCommitSha1() {
+        return manager.getHeadBranchCommitSha1();
+    }
+
+    private void preformFFMerge(String bossCommitSha1, String sha1ToAdd, String branchName) {
+        try {
+            appManager.preformFFMerge(bossCommitSha1, sha1ToAdd, branchName);
+        } catch (IOException ex) {
+            showExceptionDialog(ex);
+            return;
+        }
+    }
+
+    private boolean checkForFFMerge(String oursCommitSha1, String theirCommitSha1, String commonFatherSha1) {
+        boolean found = false;
+        if (oursCommitSha1.equals(theirCommitSha1))
+            throw new UnsupportedOperationException("These branches are equal! Nothing to merge\nOperation terminated");
+        if (theirCommitSha1.equals(commonFatherSha1))
+            throw new UnsupportedOperationException(headBranchLabel.getText() + " Is a straight evolution of this branch!\nNothing to merge");
+        if (oursCommitSha1.equals(commonFatherSha1))
+            found = true;
+        return found;
+    }
+
+    private void deployAndRemoveMergedFiles(List<MergeHandler.FileToAdd> filesToAdd, List<MergeHandler.FileToRemove> filesToRemove) {
+        try {
+            for (MergeHandler.FileToRemove f : filesToRemove) {
+                if (Paths.get(f.getPath() + "/" + f.getName()).toFile().isDirectory()) {
+                    appManager.deleteAllFilesFromFolder(f.getPath());
+                } else
+                    appManager.deleteFileFromFolder(f.getPath().toString(), f.getName());
+            }
+        } catch (Exception ex) {
+            showExceptionDialog(ex);
+            return;
+        }
+        for (MergeHandler.FileToAdd f : filesToAdd) {
+            try {
+                appManager.insertFileToWc(f.getPath(), f.getName(), f.getSha1());
+            } catch (IOException ex) {
+                showExceptionDialog(ex);
+                return;
+            }
+        }
+    }
+
+    private void resolveConflicts(MergeHandler mergeHandler, String yourUsername, String yourDateCreated) throws
+            IOException {
+        if (mergeHandler.getConflicts().isEmpty()) return;
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/dialogs/conflictsDialog.fxml"));
         Parent parent = fxmlLoader.load();
         ConflictsController controller = fxmlLoader.getController();
         Scene scene = new Scene(parent);
@@ -631,8 +826,11 @@ public class MAGitController {
         controller.setPrimaryStage(stage);
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
-        controller.setConflict(c);
+        setTheme(scene);
         controller.setMergeHandler(mergeHandler);
+        controller.setYourDate(yourDateCreated);
+        controller.setYourUsername(yourUsername);
+        controller.setConflicts(mergeHandler.getConflicts());
         stage.showAndWait();
     }
 
@@ -645,5 +843,388 @@ public class MAGitController {
             manager.deleteFileFromFolder(String.valueOf(path), name);
         }
         manager.deployFile(sha1, path);
+    }
+
+    public void createBranchToCommit(CommitNodeController commitNodeController) {
+        String sha1 = commitNodeController.getSha1();
+        String newBranchName = createNewBranch(null);
+        Branch.changeBranchPointedCommit(newBranchName, sha1, false);
+        try {
+            if (askForYesNo(QuestionConsts.ASK_CHECKOUT)) {
+                DiffHandler diff;
+                diff = manager.getDiff();
+                if (!appManager.isCleanState(diff)) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setHeaderText("This repository is not in \"Clean State\"\nCheckout was not preformed");
+                    setTheme(alert);
+                    alert.show();
+                } else {
+                    manager.makeCheckOut(newBranchName);
+                }
+            }
+        } catch (Exception ex) {
+            showExceptionDialog(ex);
+        }
+        updateUI();
+    }
+
+    public void resetHeadBranchToCommit(CommitNodeController commitNodeController) {
+        String sha1 = commitNodeController.getSha1();
+        Branch.changeBranchPointedCommit(Branch.getActiveBranch(), sha1, false);
+        try {
+            manager.makeCheckOut(Branch.getActiveBranch());
+        } catch (FileSystemException ex) {
+            showExceptionDialog(ex);
+            return;
+        }
+        updateUI();
+    }
+
+    public void fillBranchOptions(CommitNodeController commitNodeController, ObservableList<MenuItem> mergingItems, ObservableList<MenuItem> deletingItems) {
+        if (!commitNodeController.hasBranches() && !commitNodeController.hasRemoteBranches()) return;
+        List<String> branchNames = commitNodeController.getBranchNames();
+        List<String> remoteBranchNames = commitNodeController.getRemoteBranchNames();
+        List<List<String>> allNames = new LinkedList<>();
+        allNames.add(branchNames);
+        allNames.add(remoteBranchNames);
+        mergingItems.clear();
+        deletingItems.clear();
+        MenuItem itemToMerging;
+        MenuItem itemToDeleting;
+        for (List<String> lst : allNames) {
+            for (String branchName : lst) {
+                if (branchName.equals(Branch.getActiveBranch())) continue;
+                itemToMerging = new MenuItem(branchName);
+                itemToDeleting = new MenuItem(branchName);
+                itemToMerging.setOnAction(e -> {
+                    try {
+                        if (branchName.endsWith(" - REMOTE"))
+                            mergeBranch(branchName.split(" - REMOTE")[0], false);
+                        else
+                            mergeBranch(branchName, false);
+                    } catch (IOException ex) {
+                        showExceptionDialog(ex);
+                        return;
+                    }
+                });
+                itemToDeleting.setOnAction(e -> {
+                    try {
+                        if (branchName.endsWith(" - REMOTE"))
+                            manager.deleteBranch(branchName.split(" - REMOTE")[0]);
+                        else
+                            manager.deleteBranch(branchName);
+                        updateUI();
+                    } catch (Exception ex) {
+                        showExceptionDialog(ex);
+                    }
+                });
+                mergingItems.add(itemToMerging);
+                if (!branchName.endsWith(" - REMOTE"))
+                    deletingItems.add(itemToDeleting);
+            }
+        }
+    }
+
+
+    @FXML
+    private void manuallyResetBranch(ActionEvent actionEvent) {
+        DiffHandler diff = manager.getDiff();
+        if (!manager.isCleanState(diff)) {
+            if (!askForYesNo("Open changes apply.\n" +
+                    "All open changes will be lost forever.\n" +
+                    "Would you like to continue?")) return;
+        }
+        TextInputDialog dialog = MAGitController.setNewDialog("Reset branch", "Enter new Sha-1 for " + Branch.getActiveBranch(), "");
+        dialog.showAndWait();
+        try {
+            manager.manuallyChangeBranch(dialog.getResult());
+            manager.makeCheckOut(Branch.getActiveBranch());
+            updateUI();
+        } catch (Exception ex) {
+            showExceptionDialog(ex);
+        }
+    }
+
+    @FXML
+    private void changeTheme1(ActionEvent actionEvent) {
+        primaryStage.getScene().getStylesheets().clear();
+        CSS_PATH = null;
+    }
+
+    @FXML
+    private void changeTheme2(ActionEvent actionEvent) {
+        primaryStage.getScene().getStylesheets().clear();
+        primaryStage.getScene().getStylesheets().add("/components/main/theme2.css");
+        CSS_PATH = "/components/main/theme2.css";
+    }
+
+    @FXML
+    private void changeTheme3(ActionEvent actionEvent) {
+        primaryStage.getScene().getStylesheets().clear();
+        primaryStage.getScene().getStylesheets().add("/components/main/theme3.css");
+        CSS_PATH = "/components/main/theme3.css";
+    }
+
+    @FXML
+    private void setBranchActionsMenu(Event event) {
+        mergeWithAction.getItems().clear();
+        deleteBranchAction.getItems().clear();
+        checkoutToAction.getItems().clear();
+        markBranchAction.getItems().clear();
+        MenuItem mergeMenuItem;
+        MenuItem deleteMenuItem;
+        MenuItem checkoutMenuItem;
+        MenuItem markBranchMenuItem;
+        List<Branch> allBranches = Branch.allBranchesToList();
+        List<Branch> toRemove = new LinkedList<Branch>();
+        for (Branch b : allBranches) {
+            if (b.getName().equals("HEAD")) continue;
+            String branchName = b.isRemote() ? b.getName() + " - REMOTE" : b.getName();
+            mergeMenuItem = new MenuItem(branchName);
+            deleteMenuItem = new MenuItem(branchName);
+            checkoutMenuItem = new MenuItem(branchName);
+            markBranchMenuItem = new MenuItem(branchName);
+
+            mergeMenuItem.setOnAction(e -> {
+                try {
+                    if (branchName.endsWith(" - REMOTE"))
+                        mergeBranch(branchName.split(" - REMOTE")[0], false);
+                    else
+                        mergeBranch(branchName, false);
+                } catch (IOException ex) {
+                    showExceptionDialog(ex);
+                    return;
+                }
+            });
+            deleteMenuItem.setOnAction(e -> {
+                try {
+                    if (branchName.endsWith(" - REMOTE"))
+                        manager.deleteBranch(branchName.split(" - REMOTE")[0]);
+                    else
+                        manager.deleteBranch(branchName);
+                    updateUI();
+                } catch (Exception ex) {
+                    showExceptionDialog(ex);
+                    return;
+                }
+            });
+            checkoutMenuItem.setOnAction(e -> {
+                try {
+                    if (branchName.endsWith(" - REMOTE"))
+                        askToCreateRTB(branchName.split(" - REMOTE")[0]);
+                    else
+                        branchCheckout(branchName);
+                } catch (IOException ex) {
+                    showExceptionDialog(ex);
+                    return;
+                }
+            });
+            markBranchMenuItem.setOnAction(e -> markCommits(branchName));
+            if (!b.isActive()) {
+                mergeWithAction.getItems().add(mergeMenuItem);
+                checkoutToAction.getItems().add(checkoutMenuItem);
+            }
+            if (!b.isRemote() && !b.isActive())
+                deleteBranchAction.getItems().add(deleteMenuItem);
+            markBranchAction.getItems().add(markBranchMenuItem);
+        }
+        mergeWithAction.disableProperty().setValue(mergeWithAction.getItems().isEmpty());
+        checkoutToAction.disableProperty().setValue(checkoutToAction.getItems().isEmpty());
+        deleteBranchAction.disableProperty().setValue(deleteBranchAction.getItems().isEmpty());
+        markBranchAction.disableProperty().setValue(mergeWithAction.getItems().isEmpty());
+    }
+
+    private void markCommits(String branchName) {
+        Branch b = (branchName.endsWith(" - REMOTE") ?
+                new Branch(branchName.split(" - REMOTE")[0], true, false) :
+                new Branch(branchName, false, Branch.checkRTB(branchName)));
+        List<Commit.commitComps> commits = Branch.getAllCommits(b);
+        for (ICell cell : treeContent.getModel().getAllCells()) {
+            CommitNode commitNode = (CommitNode) cell;
+            commitNode.unMark();
+            for (Commit.commitComps c : commits) {
+                if (c.getSha1().equals(commitNode.getSha1())) {
+                    commitNode.mark();
+                    break;
+                }
+            }
+        }
+
+    }
+
+    private void askToCreateRTB(String branchName) {
+        if (Branch.doesLocalBranchExists(branchName)) {
+            showExceptionDialog(new UnsupportedOperationException("A branch named " + branchName + " already exists locally\n" +
+                    "Operation terminated"));
+            return;
+        }
+        if (askForYesNo("You are trying to Checkout to a Remote Branch\n" +
+                "Would you like to create a new Remote Tracking Branch?")) {
+            createNewRTB(branchName);
+            if (askForYesNo(QuestionConsts.ASK_CHECKOUT)) {
+                DiffHandler diff;
+                diff = manager.getDiff();
+                if (!appManager.isCleanState(diff)) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setHeaderText("This repository is not in \"Clean State\"\nCheckout was not preformed");
+                    setTheme(alert);
+                    alert.show();
+                } else {
+                    try {
+                        manager.makeCheckOut(branchName);
+                    } catch (FileSystemException ex) {
+                        showExceptionDialog(ex);
+                        return;
+                    }
+                }
+            }
+            updateUI();
+        }
+    }
+
+    private void createNewRTB(String branchName) {
+        Path remotePath = manager.getRemotePath();
+        String RRSha1 = unzipFileToString(findFileInFolderByName(PathConsts.REMOTE_BRANCHES_FOLDER(), branchName));
+        manager.createNewRTB(branchName, remotePath, RRSha1);
+    }
+
+
+    public void cloneRepository(Path localPath, Path clonePath) {
+        try {
+            manager.cloneRepository(localPath, clonePath);
+            manager.makeCheckOut(Branch.getActiveBranch());
+            updateUI();
+        } catch (Exception ex) {
+            showExceptionDialog(ex);
+            return;
+        }
+    }
+
+    @FXML
+    private void showCloneDialog(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/dialogs/cloneDialog.fxml"));
+        Parent parent = fxmlLoader.load();
+        CloneController controller = fxmlLoader.getController();
+        Scene scene = new Scene(parent);
+        Stage stage = new Stage();
+        controller.setPrimaryStage(stage);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        setTheme(scene);
+        stage.showAndWait();
+        updateUI();
+    }
+
+    @FXML
+    private void remoteFetch(ActionEvent actionEvent) {
+        try {
+            manager.fetchRepo();
+        } catch (IOException ex) {
+            showExceptionDialog(ex);
+            return;
+        }
+        updateUI();
+    }
+
+    @FXML
+    private void remotePull(ActionEvent actionEvent) {
+        if (!Branch.checkRTB(Branch.getActiveBranch())) {
+            showExceptionDialog(new UnsupportedOperationException("Your head branch is not a remote tracking branch.\nOperation terminated."));
+            return;
+        }
+        if (localRepoChangedComparedToRemoteRepo()) {
+            showExceptionDialog(new UnsupportedOperationException("The local branch was modified.\nTry to push your changes first.\nOperation terminated."));
+            return;
+        }
+        DiffHandler diff = manager.getDiff();
+        if (!appManager.isCleanState(diff)) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setHeaderText("This repository is not in \"Clean State\"\nOperation terminated");
+            setTheme(alert);
+            alert.show();
+        } else {
+            try {
+                manager.remotePull();
+                mergeBranch(Branch.getActiveBranch(), true);
+                updateUI();
+            } catch (Exception e) {
+                showExceptionDialog(e);
+            }
+        }
+    }
+
+    private boolean localRepoChangedComparedToRemoteRepo() {
+        AncestorFinder fatherFinder = new AncestorFinder((Commit::sha1ToCommitRepresentative));
+        String ourSha1 = getHeadCommitSha1();
+        String theirSha1 = getOurRRBranchSha1ByName(Branch.getActiveBranch());
+        String commonFatherSha1 = fatherFinder.traceAncestor(ourSha1, theirSha1);
+        return !commonFatherSha1.equals(ourSha1);
+    }
+
+    @FXML
+    private void remotePush(ActionEvent actionEvent) {
+//        if (!Branch.checkRTB(Branch.getActiveBranch())) {
+////            showExceptionDialog(new UnsupportedOperationException("Your head branch is not a remote tracking branch.\nOperation terminated."));
+////            return;
+        if (wasRemoteBranchModified(Branch.getActiveBranch())) {
+            showExceptionDialog(new UnsupportedOperationException("The remote branch was modified since the last sync.\nOperation terminated."));
+            return;
+        }
+        try {
+            manager.remotePush();
+            if (!Branch.checkRTB(Branch.getActiveBranch()))
+                pushNewLocalBranch();
+            updateUI();
+        } catch (IOException e) {
+            showExceptionDialog(e);
+            return;
+        }
+    }
+
+    private void pushNewLocalBranch() {
+        String activeBranchName = Branch.getActiveBranch();
+        String activeBranchSha1 = Branch.getCommitSha1ByBranchName(activeBranchName);
+        createNewRBLocally(activeBranchName, activeBranchSha1);
+        createNewRBinRemote(activeBranchName, activeBranchSha1);
+        Branch.changeBranchPointedCommit(activeBranchName, activeBranchSha1, true);
+        makeBranchRTB(activeBranchName, activeBranchSha1);
+    }
+
+    private void makeBranchRTB(String branchName, String branchSha1) {
+        try {
+            manager.makeBranchRTB(branchName, branchSha1);
+        } catch (IOException e) {
+            showExceptionDialog(e);
+        }
+    }
+
+    private void createNewRBinRemote(String branchName, String branchSha1) {
+        try {
+            manager.createNewRBinRemote(branchName, branchSha1);
+        } catch (IOException e) {
+            showExceptionDialog(e);
+        }
+    }
+
+    private void createNewRBLocally(String branchName, String branchSha1) {
+        try {
+            manager.createNewRBLocally(branchName, branchSha1);
+        } catch (IOException e) {
+            showExceptionDialog(e);
+        }
+    }
+
+    private boolean wasRemoteBranchModified(String branchName) {
+        File f = findFileInFolderByName(PathConsts.BRANCHES_FOLDER(getRemotePath()), branchName);
+        if (f == null || !f.exists())
+            return false;
+        String ourRemoteBranchCommit = appManager.getOurRRBranchSha1ByName(branchName);
+        String remoteBranchCommit = getRRBranchOriginalSha1ByName(getRemotePath(), branchName);
+        return !(ourRemoteBranchCommit.equals(remoteBranchCommit));
+    }
+
+    @FXML
+    private void showAbout(ActionEvent actionEvent) {
+        ALERT("My Amazing Git - Version 1.0\n\nYuval Niezni\nynui12@gmail.com", "About");
     }
 }

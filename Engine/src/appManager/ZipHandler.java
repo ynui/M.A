@@ -15,9 +15,12 @@ public class ZipHandler {
 
     public static void zipFile(File file, String name, String dest) throws IOException {
         try {
-            String zipFileName = dest
-                    .concat("/")
-                    .concat(name);
+            String zipFileName = dest.endsWith("/") ?
+                    dest
+                            .concat(name) :
+                    dest
+                            .concat("/")
+                            .concat(name);
             FileOutputStream fos = new FileOutputStream(zipFileName);
             ZipOutputStream zos = new ZipOutputStream(fos);
 
@@ -38,7 +41,7 @@ public class ZipHandler {
     public static List<String> unzipFolderToCompList(String name, String dest) {
         List<String> folderRep = new ArrayList<>();
         if (!(name.equals("") || name.equals("null"))) {
-            File f = appManager.findFileInFolderByName(dest, name);
+            File f = appManager.findFileInFolderByName(Paths.get(dest).toString(), name);
             String dataFromZipped = unzipFileToString(f);
             folderRep = Arrays.asList(dataFromZipped.split("\n"));
         }

@@ -8,16 +8,71 @@ import java.util.*;
 
 public class MergeHandler {
 
-    public class Conflict {
+    public void addToFilesToRemove(String name, Path path) {
+        this.filesToRemove.add(new FileToRemove(name, path));
+    }
+
+    public class FileToRemove {
+        String name;
+        Path path;
+
+        public FileToRemove(String name, Path path) {
+            this.name = name;
+            this.path = path;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Path getPath() {
+            return path;
+        }
+    }
+
+    public class FileToAdd {
+        String name;
+        String sha1;
+        Path path;
+
+        public String getName() {
+            return name;
+        }
+
+        public String getSha1() {
+            return sha1;
+        }
 
         public Path getPath() {
             return path;
         }
 
+        public FileToAdd(String name, String sha1, Path path) {
+            this.name = name;
+            this.sha1 = sha1;
+            this.path = path;
+        }
+    }
+
+
+    public class Conflict {
+
         Folder.folderComponents ourFile;
         Folder.folderComponents theirFile;
         Folder.folderComponents fatherFile;
         Path path;
+        String name;
+
+
+        public Path getPath() {
+            return path;
+        }
+
+
+        public String getName() {
+            return name;
+        }
+
 
         public Folder.folderComponents getOurFile() {
             return ourFile;
@@ -36,9 +91,20 @@ public class MergeHandler {
             this.theirFile = theirFile;
             this.fatherFile = fatherFile;
             this.path = path;
+            this.name = findFileName(ourFile, theirFile, fatherFile);
         }
 
-        public List<String> compToFileRep(Folder.folderComponents comps){
+        private String findFileName(Folder.folderComponents ourFile, Folder.folderComponents theirFile, Folder.folderComponents fatherFile) {
+            if (ourFile != null)
+                return ourFile.getName();
+            if (theirFile != null)
+                return theirFile.getName();
+            if (fatherFile != null)
+                return fatherFile.getName();
+            return null;
+        }
+
+        public List<String> compToFileRep(Folder.folderComponents comps) {
             List<String> out = new LinkedList<>();
             out.add(comps.getName());
             out.add(comps.getSha1());
@@ -49,11 +115,24 @@ public class MergeHandler {
         }
 
 
-
+        @Override
+        public String toString() {
+            return path + "\\" + name;
+        }
     }
 
     private List<Conflict> conflicts;
     private Map<Path, List<String>> representationMap;
+    private List<FileToAdd> filesToAdd;
+    private List<FileToRemove> filesToRemove;
+
+    public List<FileToRemove> getFilesToRemove() {
+        return filesToRemove;
+    }
+
+    public List<FileToAdd> getFilesToAdd() {
+        return filesToAdd;
+    }
 
     public Map<Path, List<String>> getRepresentationMap() {
         return representationMap;
@@ -65,6 +144,8 @@ public class MergeHandler {
 
     public MergeHandler() {
         conflicts = new LinkedList<>();
+        filesToAdd = new LinkedList<>();
+        filesToRemove = new LinkedList<>();
         representationMap = new HashMap<>();
     }
 
@@ -72,7 +153,6 @@ public class MergeHandler {
         List<String> fileRep;
         String type;
         List<String> fileNames = getExclusiveNames(ourFilesList, theirFilesList, fatherFilesList);
-        Folder fol = new Folder();
         for (String name : fileNames) {
             int state = getState(name, ourFilesList, theirFilesList, fatherFilesList);
             switch (state) {
@@ -80,14 +160,15 @@ public class MergeHandler {
                     //delete father
                     break;
                 case 1:
-                    //theirs
+                case 11:
                     fileRep = getFileRepList(name, theirFilesList);
+                    representationMap.put(Paths.get(path + "/" + name), fileRep);
                     addFileToWc(name, path, theirFilesList, fileRep);
                     break;
                 case 2:
                     type = getFileRepType(name, theirFilesList);
                     if (type.equals("FOLDER"))
-                        getMergedHeadFolderAndSaveFiles(new LinkedList<>(), theirFilesList, fatherFilesList, Paths.get(path + "/" + name));
+                        getMergedHeadFolderAndSaveFiles(new LinkedList<>(), getFolderCompsInFolderByName(name, theirFilesList), getFolderCompsInFolderByName(name, fatherFilesList), Paths.get(path + "/" + name));
                     else
                         addFileToConflicts(name, path, ourFilesList, theirFilesList, fatherFilesList);
                     break;
@@ -95,61 +176,45 @@ public class MergeHandler {
                     //delete theirs
                     break;
                 case 4:
+                case 8:
+                case 10:
+                case 12:
+                case 13:
                     fileRep = getFileRepList(name, ourFilesList);
                     representationMap.put(Paths.get(path + "/" + name), fileRep);
                     break;
                 case 5:
                     type = getFileRepType(name, ourFilesList);
                     if (type.equals("FOLDER"))
-                        getMergedHeadFolderAndSaveFiles(ourFilesList, new LinkedList<>(), fatherFilesList, Paths.get(path + "/" + name));
+                        getMergedHeadFolderAndSaveFiles(getFolderCompsInFolderByName(name, ourFilesList), new LinkedList<>(), getFolderCompsInFolderByName(name, fatherFilesList), Paths.get(path + "/" + name));
                     else
                         addFileToConflicts(name, path, ourFilesList, theirFilesList, fatherFilesList);
                     break;
                 case 6:
-                    type = getFileRepType(name, ourFilesList);
-                    if (type.equals("FOLDER"))
-                        deleteFolderFromWc(path);
-                    else
-                        deleteFileFromWc(name, path);
+                    filesToRemove.add(new FileToRemove(name, path));
                     break;
                 case 7:
                     type = getFileRepType(name, ourFilesList);
                     if (type.equals("FOLDER"))
-                        getMergedHeadFolderAndSaveFiles(ourFilesList, theirFilesList, new LinkedList<>(), Paths.get(path + "/" + name));
+                        getMergedHeadFolderAndSaveFiles(getFolderCompsInFolderByName(name, ourFilesList), getFolderCompsInFolderByName(name, theirFilesList), new LinkedList<>(), Paths.get(path + "/" + name));
                     else
                         addFileToConflicts(name, path, ourFilesList, theirFilesList, fatherFilesList);
-                    break;
-                case 8:
-                    fileRep = getFileRepList(name, ourFilesList);
-                    representationMap.put(Paths.get(path + "/" + name), fileRep);
                     break;
                 case 9:
                     type = getFileRepType(name, ourFilesList);
                     if (type.equals("FOLDER"))
-                        getMergedHeadFolderAndSaveFiles(ourFilesList, theirFilesList, fatherFilesList, Paths.get(path + "/" + name));
+                        getMergedHeadFolderAndSaveFiles(getFolderCompsInFolderByName(name, ourFilesList), getFolderCompsInFolderByName(name, theirFilesList), getFolderCompsInFolderByName(name, fatherFilesList), Paths.get(path + "/" + name));
                     else
                         addFileToConflicts(name, path, ourFilesList, theirFilesList, fatherFilesList);
-                    break;
-                case 10:
-                    fileRep = getFileRepList(name, ourFilesList);
-                    representationMap.put(Paths.get(path + "/" + name), fileRep);
-                    break;
-                case 11:
-                    //theirs
-                    fileRep = getFileRepList(name, theirFilesList);
-                    representationMap.put(Paths.get(path + "/" + name), fileRep);
-                    break;
-                case 12:
-                    fileRep = getFileRepList(name, ourFilesList);
-                    representationMap.put(Paths.get(path + "/" + name), fileRep);
-                    break;
-                case 13:
-                    fileRep = getFileRepList(name, ourFilesList);
-                    representationMap.put(Paths.get(path + "/" + name), fileRep);
                     break;
             }
         }
     }
+
+    private List<String> getFolderCompsInFolderByName(String name, List<String> filesList) {
+        return appManager.folderSha1ToFilesList(getFileRepSha1(name, filesList));
+    }
+
 
     private void deleteFolderFromWc(Path path) throws FileSystemException {
         appManager.deleteAllFilesFromFolder(path);
@@ -206,27 +271,25 @@ public class MergeHandler {
         if (temp.contains(fileName)) {
             fatherRep = getFileRepList(fileName, fatherFilesList);
         }
-        if(ourRep != null) ourComps = new Folder.folderComponents(ourRep);
-        if(theirRep != null) theirComps = new Folder.folderComponents(theirRep);
-        if(fatherRep != null) fatherComps = new Folder.folderComponents(fatherRep);
+        if (ourRep != null) ourComps = new Folder.folderComponents(ourRep);
+        if (theirRep != null) theirComps = new Folder.folderComponents(theirRep);
+        if (fatherRep != null) fatherComps = new Folder.folderComponents(fatherRep);
         this.conflicts.add(new Conflict(ourComps, theirComps, fatherComps, path));
     }
 
     private void addFileToWc(String name, Path path, List<String> filesList, List<String> fileRep) throws IOException {
-        for (String fileName : filesList) {
-            if (fileRep.get(0).equals(name)) {
-                if (fileRep.get(2).equals("FOLDER")) {
-                    representationMap.put(Paths.get(path + "/" + name), fileRep);
-                    List<String> newFilesList = appManager.folderSha1ToFilesList(fileRep.get(1));
-                    List<String> newPrevComponents = new LinkedList<>();
-                    for (String newFileName : newFilesList) {
-                        newPrevComponents = appManager.folderRepToList(newFileName);
-                        addFileToWc(newPrevComponents.get(0), Paths.get(path + "/" + fileRep.get(0)), newFilesList, newPrevComponents);
-                    }
-                } else {
-                    appManager.insertFileToWc(path,name,fileRep.get(1));
-                    representationMap.put(Paths.get(path + "/" + name), fileRep);
+        if (fileRep.get(0).equals(name)) {
+            if (fileRep.get(2).equals("FOLDER")) {
+                representationMap.put(Paths.get(path + "/" + name), fileRep);
+                List<String> newFilesList = appManager.folderSha1ToFilesList(fileRep.get(1));
+                List<String> newPrevComponents = new LinkedList<>();
+                for (String newFileName : newFilesList) {
+                    newPrevComponents = appManager.folderRepToList(newFileName);
+                    addFileToWc(newPrevComponents.get(0), Paths.get(path + "/" + fileRep.get(0)), newFilesList, newPrevComponents);
                 }
+            } else {
+                filesToAdd.add(new FileToAdd(name, fileRep.get(1), path));
+                representationMap.put(Paths.get(path + "/" + name), fileRep);
             }
         }
     }
@@ -235,7 +298,6 @@ public class MergeHandler {
         boolean[] boolState = new boolean[6];
         List<String> temp;
         String ourSha1 = null, theirSha1 = null, fatherSha1 = null;
-
 
         temp = getExclusiveNames(ourFilesList, new LinkedList<>(), new LinkedList<>());
         if (temp.contains(fileName)) {
@@ -287,7 +349,7 @@ public class MergeHandler {
     }
 
     private String getSha1FromCompListByName(List<String> filesList, String name) {
-        List<String> temp = new LinkedList<>();
+        List<String> temp;
         for (String fileRep : filesList) {
             temp = appManager.folderRepToList(fileRep);
             if (temp.get(0).equals(name))

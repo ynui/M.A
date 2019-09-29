@@ -6,7 +6,7 @@ import com.fxgraph.graph.IEdge;
 import javafx.beans.binding.DoubleBinding;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 
 import java.io.IOException;
@@ -19,6 +19,8 @@ public class CommitNode extends AbstractCell {
     private String timestamp;
     private String committer;
     private String message;
+    private String branch;
+    private String remoteBranch;
     private String sha1;
     private int pos;
 
@@ -42,18 +44,39 @@ public class CommitNode extends AbstractCell {
         this.pos = pos;
     }
 
+    public void setBranch(String branch) {
+        this.branch = branch;
+        commitNodeController.setBranch(branch);
+        commitNodeController.makeBranchVisible();
+    }
+
+    public void setRemoteBranch(String branch) {
+        this.remoteBranch = branch;
+        commitNodeController.setRemoteBranch(branch);
+        commitNodeController.makeRemoteBranchVisible();
+    }
+
+    public void mark(){
+        commitNodeController.mark();
+    }
+
+    public void unMark(){
+        commitNodeController.unMark();
+    }
+
     @Override
     public Region getGraphic(Graph graph) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             URL url = getClass().getResource("/commitTree/node/commitNode.fxml");
             fxmlLoader.setLocation(url);
-            GridPane root = fxmlLoader.load();
+            HBox root = fxmlLoader.load();
 
             commitNodeController = fxmlLoader.getController();
             commitNodeController.setCommitMessage(message);
             commitNodeController.setCommitter(committer);
             commitNodeController.setCommitTimeStamp(timestamp);
+            commitNodeController.setSha1(sha1);
 
             return root;
         } catch (IOException e) {
@@ -81,4 +104,5 @@ public class CommitNode extends AbstractCell {
     public int hashCode() {
         return timestamp != null ? timestamp.hashCode() : 0;
     }
+
 }

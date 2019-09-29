@@ -41,6 +41,7 @@ public class Repository {
             new File(path + "/.magit/objects").mkdirs();
             new File(path + "/.magit/branches").mkdirs();
             new File(path + "/.magit/temp").mkdirs();
+            new File(path + "/.magit/remote").mkdirs();
             appManager.workingPath = Paths.get(path);
             Branch.createEmptyBranch(path + "/.magit/branches");
         } else

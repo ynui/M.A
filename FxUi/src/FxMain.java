@@ -4,7 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -17,9 +17,9 @@ public class FxMain extends Application {
         FXMLLoader loader = new FXMLLoader();
 
         // load main fxml
-        URL mainFXML = getClass().getResource("components/main/MAGit.fxml");
+        URL mainFXML = getClass().getResource("/components/main/MAGit.fxml");
         loader.setLocation(mainFXML);
-        BorderPane root = loader.load();
+        GridPane root = loader.load();
 
         // wire up controller
         MAGitController controller = loader.getController();
@@ -28,7 +28,7 @@ public class FxMain extends Application {
         controller.setAppManager(manager);
 
         // set stage
-        primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("resources/appIcon.png")));
+        primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("/resources/appIcon.png")));
         primaryStage.setTitle("My Amazing Git!");
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);

@@ -1,5 +1,6 @@
 package common;
 
+import components.main.MAGitController;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
@@ -16,6 +17,7 @@ public class QuestionConsts {
     public static boolean askForYesNo(String questionString) {
         Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
         dialog.setHeaderText(questionString);
+        MAGitController.setTheme(dialog);
         dialog.showAndWait();
         return dialog.getResult() == ButtonType.OK;
     }

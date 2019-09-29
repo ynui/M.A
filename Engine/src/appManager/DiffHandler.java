@@ -52,6 +52,13 @@ public class DiffHandler {
         return unmodifiedBlobs;
     }
 
+    public void createModifiedFilesListsBetween2FolderSha1(String firstSha1, String secSha1) {
+        findModifiedFilesInFoldersBySha1(changed, created, deleted, unmodifiedBlobs, secSha1, firstSha1, appManager.workingPath);
+        created.replaceAll(s -> Paths.get(s).toString());
+        changed.replaceAll(s -> Paths.get(s).toString());
+        deleted.replaceAll(s -> Paths.get(s).toString());
+    }
+
     //setDiffs
     public void createModifiedFilesLists() {
         String commitHeadFolderSha1 = Commit.getHeadCommitRootFolderSha1();
@@ -128,6 +135,84 @@ public class DiffHandler {
         }
     }
 
+
+    private void findModifiedFilesInFoldersBySha1(List<String> changed, List<String> created, List<String> removed, Map<Path, List<String>> unmodified, String secFolderSha1, String firstFolderSha1, Path path) {
+        List<String> firstPrevComponents = new ArrayList<>();
+        List<String> secPrevComponents = new ArrayList<>();
+        List<String> firstPrevStateFolderRep = (firstFolderSha1 == null || firstFolderSha1.equals(EMPTY_SHA1)) ?
+                new ArrayList<>()
+                : unzipFolderToCompList(firstFolderSha1, PathConsts.OBJECTS_FOLDER());
+        List<String> secPrevStateFolderRep = (secFolderSha1 == null || secFolderSha1.equals(EMPTY_SHA1)) ?
+                new ArrayList<>()
+                : unzipFolderToCompList(secFolderSha1, PathConsts.OBJECTS_FOLDER());
+        int firstIndx = 0;
+        int secIndx = 0;
+        String firstName = "";
+        String firstSha1 = "";
+        String firstType = "";
+        String secName = "";
+        String secSha1 = "";
+        String secType = "";
+        while (secIndx < secPrevStateFolderRep.size() && firstIndx < firstPrevStateFolderRep.size()) {
+            firstPrevComponents = appManager.folderRepToList(firstPrevStateFolderRep.get(firstIndx));
+            secPrevComponents = appManager.folderRepToList(secPrevStateFolderRep.get(secIndx));
+            firstName = firstPrevComponents.get(0);
+            firstSha1 = firstPrevComponents.get(1);
+            firstType = firstPrevComponents.get(2);
+            secName = secPrevComponents.get(0);
+            secSha1 = secPrevComponents.get(1);
+            secType = secPrevComponents.get(2);
+            int diff = secName.compareTo(firstName);
+            if (diff == 0) {
+                if (firstType.equals("FOLDER")) {
+                    findModifiedFilesInFoldersBySha1(changed, created, removed, unmodified, secSha1, firstSha1, Paths.get(path + "/" + firstName));
+                } else {
+                    if (!secSha1.equals(firstSha1))
+                        changed.add(path + "/" + secName);
+                    else
+                        unmodified.put(Paths.get(path + "/" + secName), firstPrevComponents);
+                }
+                secIndx++;
+                firstIndx++;
+            } else if (diff < 0) {
+                if (secType.equals("FOLDER"))
+                    addAllFolderRepFilesToList(created, Paths.get(path + "/" + secName), secSha1);
+                else
+                    created.add(path + "/" + secName);
+                secIndx++;
+            } else {
+                if (firstType.equals("FOLDER"))
+                    addAllFolderRepFilesToList(removed, Paths.get(path + "/" + firstName), firstSha1);
+                else
+                    removed.add(path + "/" + firstName);
+                firstIndx++;
+            }
+        }
+        while (secIndx < secPrevStateFolderRep.size()) {
+            secPrevComponents = appManager.folderRepToList(secPrevStateFolderRep.get(secIndx));
+            secName = secPrevComponents.get(0);
+            secSha1 = secPrevComponents.get(1);
+            secType = secPrevComponents.get(2);
+            if (secType.equals("FOLDER"))
+                addAllFolderRepFilesToList(created, Paths.get(path + "/" + secName), secSha1);
+            else
+                created.add(path + "/" + secName);
+            secIndx++;
+        }
+        while (firstIndx < firstPrevStateFolderRep.size()) {
+            firstPrevComponents = appManager.folderRepToList(firstPrevStateFolderRep.get(firstIndx));
+            firstName = firstPrevComponents.get(0);
+            firstSha1 = firstPrevComponents.get(1);
+            firstType = firstPrevComponents.get(2);
+            if (firstType.equals("FOLDER"))
+                addAllFolderRepFilesToList(removed, Paths.get(path + "/" + firstName), firstSha1);//probably not working
+            else
+                removed.add(path + "/" + firstName);
+            firstIndx++;
+        }
+    }
+
+
     private void addAllFolderFilesToList(List<String> lst, Path p) {
         List<File> currFiles = appManager.getFiles(p);
         for (File f : currFiles) {
@@ -150,9 +235,9 @@ public class DiffHandler {
 //        }
 //    }
 
-    protected void addAllFolderRepFilesToList(List<String> lst, Path path, String prevSha1) {
+    public void addAllFolderRepFilesToList(List<String> lst, Path path, String prevSha1) {
         List<String> prevComponents = new ArrayList<>();
-        List<String> prevStateFolderRep = prevSha1 == null ? new ArrayList<>() : unzipFolderToCompList(prevSha1, PathConsts.OBJECTS_FOLDER());
+        List<String> prevStateFolderRep = (prevSha1 == null || prevSha1.equals(EMPTY_SHA1)) ? new ArrayList<>() : unzipFolderToCompList(prevSha1, PathConsts.OBJECTS_FOLDER());
         for (String fileRep : prevStateFolderRep) {
             prevComponents = appManager.folderRepToList(fileRep);
             if (prevComponents.get(2).equals("FOLDER"))
@@ -164,13 +249,13 @@ public class DiffHandler {
 
     protected void addAllFolderRepFilesToMap(Map<Path, List<String>> map, Path path, String prevSha1) {
         List<String> prevComponents = new ArrayList<>();
-        List<String> prevStateFolderRep = prevSha1 == null ? new ArrayList<>() : unzipFolderToCompList(prevSha1, PathConsts.OBJECTS_FOLDER());
+        List<String> prevStateFolderRep = (prevSha1 == null || prevSha1.equals(EMPTY_SHA1)) ? new ArrayList<>() : unzipFolderToCompList(prevSha1, PathConsts.OBJECTS_FOLDER());
         for (String fileRep : prevStateFolderRep) {
             prevComponents = appManager.folderRepToList(fileRep);
             if (prevComponents.get(2).equals("FOLDER"))
                 addAllFolderRepFilesToMap(map, Paths.get(path + "/" + prevComponents.get(0)), prevComponents.get(1));
             else
-                map.put(Paths.get(path + "/" + prevComponents.get(0)),prevComponents);
+                map.put(Paths.get(path + "/" + prevComponents.get(0)), prevComponents);
         }
     }
 
@@ -188,12 +273,6 @@ public class DiffHandler {
             }
         }
     }
-
-
-
-
-
-
 
 
 }

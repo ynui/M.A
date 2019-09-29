@@ -1,6 +1,7 @@
 package dialogs;
 
 import appManager.appManager;
+import components.main.MAGitController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -32,20 +33,26 @@ public class newRepoController {
     private File dirPick() {
         DirectoryChooser dirChooser = new DirectoryChooser();
         File f = dirChooser.showDialog(primaryStage);
-        pathInput.set(String.valueOf(f.toPath()));
+        if (f != null)
+            pathInput.set(String.valueOf(f.toPath()));
         return f;
     }
 
     @FXML
     private void createRepo() {
-        if(localPathInput.getText() == null || nameInput.getText() == null || localPathInput.getText().equals("") || nameInput.getText().equals("")){
+        String path;
+        if (localPathInput.getText() == null || nameInput.getText() == null || localPathInput.getText().equals("") || nameInput.getText().equals("")) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText("All fields must not be empty.\nTry again");
+            MAGitController.setTheme(alert);
             alert.showAndWait();
             return;
         }
         try {
-            appManager.manager.createEmptyRepository(localPathInput.getText() + nameInput.getText());
+            if (localPathInput.getText().endsWith("\\"))
+                appManager.manager.createEmptyRepository(localPathInput.getText() + nameInput.getText());
+            else
+                appManager.manager.createEmptyRepository(localPathInput.getText() + "/" + nameInput.getText());
         } catch (Exception e) {
             showExceptionDialog(e);
         } finally {
@@ -55,7 +62,7 @@ public class newRepoController {
 
     @FXML
     private void closeDialog() {
-        Stage stage = (Stage)nameInput.getScene().getWindow();
+        Stage stage = (Stage) nameInput.getScene().getWindow();
         stage.close();
     }
 

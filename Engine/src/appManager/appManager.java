@@ -2,6 +2,7 @@ package appManager;
 
 
 import common.Consts;
+import components.main.MAGitController;
 import org.apache.commons.codec.digest.DigestUtils;
 import puk.team.course.magit.ancestor.finder.AncestorFinder;
 import sun.dc.path.PathException;
@@ -38,14 +39,45 @@ public class appManager {
         manager.deployFile(sha1, path);
     }
 
+    public static String stringToSha1(String text) {
+        return DigestUtils.sha1Hex(text);
+    }
+
+    public static void preformFFMerge(String bossCommitSha1, String sha1ToAdd, String branchName) throws IOException {
+        Commit.commitComps c = Commit.sha1ToCommitComps(bossCommitSha1);
+        if (c.getPrevCommit().equals(sha1ToAdd)) {
+            Branch.changeBranchPointedCommit(Branch.getActiveBranch(), bossCommitSha1, false);
+            Branch.changeBranchPointedCommit(branchName, bossCommitSha1, false);
+            return;
+        }
+        String commitTxtRep = c.getHeadFolder() + "\n" +
+                c.getPrevCommit() + "\n" +
+                sha1ToAdd + "\n" +
+                c.getNote() + "\n" +
+                c.getDate() + "\n" +
+                c.getAuthor();
+        String newSha1 = stringToSha1(commitTxtRep);
+        File newCommitRep = createTextRepresentation(commitTxtRep, newSha1);
+        zipFile(newCommitRep, newSha1, PathConsts.OBJECTS_FOLDER());
+        Files.delete(newCommitRep.toPath());
+        Branch.changeBranchPointedCommit(Branch.getActiveBranch(), newSha1, false);
+        Branch.changeBranchPointedCommit(branchName, newSha1, false);
+    }
+
+
     public void deployXml(XmlRepo repo) throws IOException {
         Repository.createEmptyRepository(repo.getRepository().getLocation(), manager);
+        if (repo.getRemoteReference() != null)
+            if (repo.getRemoteReference().getLocation() != null)
+                generateRemoteFlag(Paths.get(repo.getRemoteReference().getLocation()));
         depolyXmlBranches(repo);
-        makeCheckOut(repo.getBranches().getHead());
+        makeCheckOut(repo.getAllBranches().getHead());
     }
 
     public static void depolyXmlBranches(XmlRepo repo) throws IOException {
-        Branch.initXmlBranches(repo, repo.getBranches().getHead());
+        Branch.initXmlBranches(repo, repo.getAllBranches().getHead());
+        //   Branch.initXmlRemoteBranches(repo, repo.getAllBranches().getHead());
+        //  Branch.initXmlRemoteTrackingBranches(repo, repo.getAllBranches().getHead());
     }
 
     public String getUsername() {
@@ -68,10 +100,6 @@ public class appManager {
 
     public void createNewCommit(String note) throws IOException {
         Commit.createCommit(this, note, username);
-    }
-
-    private void createMergedCommit(appManager manager, String note, String username, String branchName, MergeHandler mergeHandler) {
-        Commit.createMergedCommit(manager, note, username, branchName, mergeHandler);
     }
 
 
@@ -187,6 +215,17 @@ public class appManager {
         }
     }
 
+    public static File createFileRepresentation(String toWrite, String name) {
+        try {
+            FileWriter fw = new FileWriter(PathConsts.TEMP_FOLDER() + "/" + name);
+            fw.write(toWrite);
+            fw.close();
+            return new File(PathConsts.TEMP_FOLDER() + "/" + name);
+        } catch (Exception e) {
+            throw new UnsupportedOperationException("Error writing file.\nContent:\n" + toWrite + "\nName:\n" + name);
+        }
+    }
+
     public static File createFileFromXmlRepresentation(String toWrite, String name) {
         try {
             FileWriter fw = new FileWriter(PathConsts.TEMP_FOLDER() + "/" + name);
@@ -275,12 +314,13 @@ public class appManager {
 
     public static void deleteFileFromFolder(String path, String name) throws IOException {
         File f = findFileInFolderByName(path, name);
-        try {
-            if (f.exists())
-                Files.delete(f.toPath());
-        } catch (FileSystemException e) {
-            throw new FileSystemException(e.getMessage() + "\nDelete this repository manually and try again");
-        }
+        if (f != null)
+            try {
+                if (f.exists())
+                    Files.delete(f.toPath());
+            } catch (FileSystemException e) {
+                throw new FileSystemException(e.getMessage() + "\nDelete this repository manually and try again");
+            }
     }
 
     public void makeCheckOut(String branchName) throws FileSystemException {
@@ -361,21 +401,32 @@ public class appManager {
     }
 
     public static List<Commit.commitComps> branchHistoryToListByCommitSha1(String currSha1) {
-        List<Commit.commitComps> commits = new LinkedList<>();
-        List<String> commitRep;
-        while (!(currSha1.equals("") || currSha1.equals("null") || currSha1.equals(Consts.EMPTY_SHA1))) {
-            commitRep = unzipFolderToCompList(currSha1, PathConsts.OBJECTS_FOLDER());
-            commits.add(new Commit.commitComps(currSha1, commitRep.get(0), commitRep.get(1), commitRep.get(2), commitRep.get(3), commitRep.get(4), commitRep.get(5)));
-            currSha1 = commitRep.get(1);
-        }
-        return commits;
+        List<Commit.commitComps> out = new LinkedList<>();
+        getPrevCommitsToList(currSha1, out, new LinkedList<String>());
+        return out;
     }
 
-    public boolean isMagitRepo(String path) {
-        File[] files = new File(path).listFiles();
-        for (File f : files)
-            if (f.getName().equals(".magit") && f.isDirectory())
-                return true;
+    private static void getPrevCommitsToList(String currSha1, List<Commit.commitComps> commits, LinkedList<String> sha1s) {
+        if (sha1s.contains(currSha1))
+            return;
+        if (currSha1.equals("") || currSha1.equals("null") || currSha1.equals(Consts.EMPTY_SHA1))
+            return;
+        List<String> commitRep = unzipFolderToCompList(currSha1, PathConsts.OBJECTS_FOLDER());
+        String firstSha1 = commitRep.get(1);
+        String secSha1 = commitRep.get(2);
+        commits.add(new Commit.commitComps(currSha1, commitRep.get(0), commitRep.get(1), commitRep.get(2), commitRep.get(3), commitRep.get(4), commitRep.get(5)));
+        sha1s.add(currSha1);
+        getPrevCommitsToList(firstSha1, commits, sha1s);
+        getPrevCommitsToList(secSha1, commits, sha1s);
+    }
+
+    public static boolean isMagitRepo(String path) {
+        if (Files.exists(Paths.get(path))) {
+            File[] files = new File(path).listFiles();
+            for (File f : files)
+                if (f.getName().equals(".magit") && f.isDirectory())
+                    return true;
+        }
         return false;
     }
 
@@ -394,7 +445,7 @@ public class appManager {
         List<Commit.commitComps> out = new LinkedList<>();
         List<Branch> allBranches = Branch.allBranchesToList();
         for (Branch b : allBranches) {
-            out.addAll(b.getAllCommits(b.getName()));
+            out.addAll(b.getAllCommits(b));
         }
         Collections.sort(out);
         return removeDuplicatesFromList(out);
@@ -411,27 +462,15 @@ public class appManager {
     }
 
     public static String getCommonFatherSha1(String firstSha1, String secSha1) {
-        AncestorFinder fatherFinder = new AncestorFinder((Commit::sha1ToCommitComps));
+        AncestorFinder fatherFinder = new AncestorFinder((Commit::sha1ToCommitRepresentative));
         return fatherFinder.traceAncestor(firstSha1, secSha1);
     }
-
-    public void mergeBranch(String note, String branchName) throws IOException {
-//        String oursCommitSha1 = Branch.getCommitSha1ByBranchName(Branch.getActiveBranch());
-//        String theirCommitSha1 = Branch.getCommitSha1ByBranchName(branchName);
-//        String commonFatherSha1 = getCommonFatherSha1(oursCommitSha1, theirCommitSha1);
-//        MergeHandler mergeHandler = new MergeHandler();
-//        mergeHandler.getMergedHeadFolderAndSaveFiles(commitSha1ToHeadFolderFilesList(oursCommitSha1), commitSha1ToHeadFolderFilesList(theirCommitSha1), commitSha1ToHeadFolderFilesList(commonFatherSha1), appManager.workingPath);
-//        MergeHandler.resolveConflicts(mergeHandler.getConflicts());
-//        createMergedCommit(this, note, username, branchName, mergeHandler);
-    }
-
-
 
 
     public static List<String> commitSha1ToHeadFolderFilesList(String folderSha1) {
         String EMPTY_SHA1 = "da39a3ee5e6b4b0d3255bfef95601890afd80709";
         List<String> commitRep = unzipFolderToCompList(folderSha1, PathConsts.OBJECTS_FOLDER());
-        return (folderSha1 == null || folderSha1.equals(EMPTY_SHA1)) ?
+        return (folderSha1 == null || folderSha1.equals(EMPTY_SHA1) || folderSha1.equals("")) ?
                 new ArrayList<>()
                 : unzipFolderToCompList(commitRep.get(0), PathConsts.OBJECTS_FOLDER());
     }
@@ -482,9 +521,274 @@ public class appManager {
         return DigestUtils.sha1Hex(currFolder.toString());
     }
 
-    public static String getFileDataFromSha1(String sha1){
+    public static String getFileDataFromSha1(String sha1) {
         File f = appManager.findFileInFolderByName(PathConsts.OBJECTS_FOLDER(), sha1);
         String dataFromZipped = unzipFileToString(f);
         return dataFromZipped;
+    }
+
+    public void cloneRepository(Path localPath, Path remotePath) throws IOException, PathException {
+        if (!isMagitRepo(remotePath.toString()))
+            throw new UnsupportedOperationException("Target folder is not a MAGit repository!");
+        createEmptyRepository(localPath.toString());
+        addRemoteBranchesFromCloned(remotePath);
+        addRemoteObjectsFromCloned(remotePath);
+        createHeadRTB(remotePath);
+        generateRemoteFlag(remotePath);
+    }
+
+    private void generateRemoteFlag(Path remotePath) throws IOException {
+        File f = createTextRepresentation(String.valueOf(remotePath), "REMOTE REMOTE");
+        Files.createDirectories(Paths.get(PathConsts.BRANCHES_FOLDER() + "/" + remotePath.getFileName()));
+        try {
+            zipFile(f, "REMOTE REMOTE", PathConsts.REMOTE_FOLDER());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            f.delete();
+        }
+    }
+
+    private void createHeadRTB(Path remotePath) throws IOException {
+        String RRHead = getRRHeadBranch(remotePath);
+        String RRSha1 = getRRHeadSha1(remotePath);
+        deleteFileFromFolder(PathConsts.BRANCHES_FOLDER(), RRHead);
+        deleteFileFromFolder(PathConsts.BRANCHES_FOLDER(), "master");
+        createNewRTB(RRHead, remotePath, RRSha1);
+        Branch.changeActiveBranch(RRHead);
+    }
+
+    private String getRRHeadSha1(Path remotePath) {
+        String prevBranch = unzipFolderToCompList("HEAD", PathConsts.BRANCHES_FOLDER(remotePath)).get(0);
+        String sha1 = null;
+        File f = findFileInFolderByName(PathConsts.BRANCHES_FOLDER(remotePath), prevBranch);
+        if (f == null || !f.exists())
+            return null;
+        sha1 = unzipFileToString(f);
+        return sha1;
+    }
+
+    public void createNewRTB(String name, Path remotePath, String RRSha1) {
+        Branch.createNewRTB(name, remotePath, RRSha1);
+    }
+
+    private String getRRHeadBranch(Path remotePath) {
+        return unzipFolderToCompList("HEAD", PathConsts.BRANCHES_FOLDER(remotePath)).get(0);
+    }
+
+    public static String getOurRRBranchSha1ByName(String branchName) {
+        File f = findFileInFolderByName(PathConsts.REMOTE_BRANCHES_FOLDER(), branchName);
+        return unzipFileToString(f);
+    }
+
+    public static String getRRBranchOriginalSha1ByName(Path remotePath, String name) {
+        File f = findFileInFolderByName(PathConsts.BRANCHES_FOLDER(remotePath), name);
+        return unzipFileToString(f);
+    }
+
+    private void addRemoteObjectsFromCloned(Path clonePath) throws IOException {
+        List<File> branches = getRemoteObjects(clonePath);
+        Path path = Paths.get(workingPath + "/.magit/objects");
+        //Files.createDirectories(path);
+        for (File file : branches) {
+            if (!Files.exists(Paths.get(path + "/" + file.getName())))
+                Files.copy(file.toPath(), Paths.get(path + "/" + file.getName()));
+        }
+    }
+
+    private List<File> getRemoteObjects(Path remotePath) {
+        List<File> objects = getFiles(Paths.get(remotePath + "/.magit/objects"));
+        return objects;
+    }
+
+    private void addRemoteBranchesFromCloned(Path clonePath) throws IOException {
+        List<File> branches = getRemoteBranches(clonePath);
+        Path path = Paths.get(workingPath + "/.magit/branches/" + clonePath.getName(clonePath.getNameCount() - 1) + "/");
+        Files.createDirectories(path);
+        for (File file : branches) {
+            if (!Files.exists(Paths.get(path + "/" + file.getName())))
+                Files.copy(file.toPath(), Paths.get(path + "/" + file.getName()));
+        }
+    }
+
+    private List<File> getRemoteBranches(Path remotePath) throws IOException {
+        List<File> branches = getFiles(Paths.get(remotePath + "/.magit/branches"));
+        return branches;
+    }
+
+    public static boolean isRemoteRepo() {
+        File f = findFileInFolderByName(PathConsts.REMOTE_FOLDER(), "REMOTE REMOTE");
+        if (f == null || !f.exists()) return false;
+        return true;
+    }
+
+    public static Path getRemotePath() {
+        File f = findFileInFolderByName(PathConsts.REMOTE_FOLDER(), "REMOTE REMOTE");
+        if (f == null || !f.exists()) return null;
+        String path = unzipFileToString(f);
+        return Paths.get(path);
+    }
+
+    public void fetchRepo() throws IOException {
+        Path remotePath = getRemotePath();
+        deleteAllFilesFromFolder(Paths.get(PathConsts.REMOTE_BRANCHES_FOLDER()));
+        addRemoteBranchesFromCloned(remotePath);
+        addRemoteObjectsFromCloned(remotePath);
+    }
+
+    public void remotePull() throws IOException {
+        String currBranchName = Branch.getActiveBranch();
+        Path remotePath = getRemotePath();
+        // addRemoteObjectsFromCloned(remotePath);
+        String RRSha1 = getRRBranchOriginalSha1ByName(remotePath, currBranchName);
+        List<String> relevantSha1s = new LinkedList<>();
+        getRelevantCommitSha1s(RRSha1, relevantSha1s, true);
+        copyRelevantSha1sPull(relevantSha1s, remotePath);
+        deleteFileFromFolder(PathConsts.REMOTE_BRANCHES_FOLDER(), currBranchName);
+        File f = createTextRepresentation(RRSha1, currBranchName);
+        zipFile(f, currBranchName, PathConsts.REMOTE_BRANCHES_FOLDER());
+        f.delete();
+
+
+//        deleteFileFromFolder(PathConsts.BRANCHES_FOLDER(getRemotePath()), currBranchName);
+//        deleteFileFromFolder(PathConsts.REMOTE_BRANCHES_FOLDER(), currBranchName);
+//        File f = createTextRepresentation(ourBranchSha1, currBranchName);
+//        zipFile(f, currBranchName, PathConsts.BRANCHES_FOLDER(getRemotePath()));
+//        zipFile(f, currBranchName, PathConsts.REMOTE_BRANCHES_FOLDER());
+
+        //need to merge
+    }
+
+    private void copyRelevantSha1sPull(List<String> relevantSha1s, Path remotePath) throws IOException {
+        for (String sha1 : relevantSha1s) {
+            File f = findFileInFolderByName(PathConsts.OBJECTS_FOLDER(remotePath), sha1);
+            if (!Files.exists(Paths.get(PathConsts.OBJECTS_FOLDER() + "/" + f.getName())))
+                Files.copy(f.toPath(), Paths.get(PathConsts.OBJECTS_FOLDER() + "/" + f.getName()));
+        }
+    }
+
+    private void getRelevantCommitSha1s(String currCommitSha1, List<String> relevantSha1s, boolean isRemote) {
+        List<String> commitComps;
+        commitComps = isRemote ?
+                unzipFolderToCompList(currCommitSha1, PathConsts.OBJECTS_FOLDER(getRemotePath()))
+                : unzipFolderToCompList(currCommitSha1, PathConsts.OBJECTS_FOLDER());
+        String headFolderSha1 = commitComps.get(0);
+        String prevCommit = commitComps.get(1);
+        String secPrevCommit = commitComps.get(2);
+        if (!(prevCommit == null || prevCommit.equals("") || prevCommit.equals("null")))
+            getRelevantCommitSha1s(prevCommit, relevantSha1s, isRemote);
+        if (!(secPrevCommit == null || secPrevCommit.equals("") || secPrevCommit.equals("null")))
+            getRelevantCommitSha1s(secPrevCommit, relevantSha1s, isRemote);
+        if (!relevantSha1s.contains(headFolderSha1))
+            getFolderSha1s(headFolderSha1, relevantSha1s, isRemote);
+        if (!relevantSha1s.contains(currCommitSha1))
+            relevantSha1s.add(currCommitSha1);
+    }
+
+    private void getFolderSha1s(String headFolderSha1, List<String> relevantSha1s, boolean isRemote) {
+        List<String> lst;
+        lst = isRemote ?
+                unzipFolderToCompList(headFolderSha1, PathConsts.OBJECTS_FOLDER(getRemotePath()))
+                : unzipFolderToCompList(headFolderSha1, PathConsts.OBJECTS_FOLDER());
+        List<String> comps = null;
+        if (lst.get(0).equals(EMPTY_SHA1) || lst.get(0).equals("")) {
+            relevantSha1s.add(EMPTY_SHA1);
+            return;
+        }
+        for (String s : lst) {
+            comps = folderRepToList(s);
+            String currSha1 = comps.get(1);
+            if (comps.get(2).equals("FOLDER")) {
+                if (!relevantSha1s.contains(currSha1))
+                    getFolderSha1s(currSha1, relevantSha1s, isRemote);
+                if (!relevantSha1s.contains(currSha1))
+                    relevantSha1s.add(currSha1);
+            } else {
+                if (!relevantSha1s.contains(currSha1))
+                    relevantSha1s.add(currSha1);
+            }
+        }
+        if (!relevantSha1s.contains(headFolderSha1))
+            relevantSha1s.add(headFolderSha1);
+    }
+
+    public void remotePush() throws IOException {
+        String currBranchName = Branch.getActiveBranch();
+        String ourBranchSha1 = Branch.getCommitSha1ByBranchName(Branch.getActiveBranch());
+        List<String> relevantSha1s = new LinkedList<>();
+        getRelevantCommitSha1s(ourBranchSha1, relevantSha1s, false);
+        copyRelevantSha1sPush(relevantSha1s, getRemotePath());
+        deleteFileFromFolder(PathConsts.BRANCHES_FOLDER(getRemotePath()), currBranchName);
+        deleteFileFromFolder(PathConsts.REMOTE_BRANCHES_FOLDER(), currBranchName);
+        File f = createTextRepresentation(ourBranchSha1, currBranchName);
+        zipFile(f, currBranchName, PathConsts.BRANCHES_FOLDER(getRemotePath()));
+        zipFile(f, currBranchName, PathConsts.REMOTE_BRANCHES_FOLDER());
+        f.delete();
+
+
+        //Will be changed for EX3 - requests
+        if (isRRBranchActive(currBranchName)) {
+            makeRRCheckOut();
+        }
+    }
+
+    private void makeRRCheckOut() {
+        Path temp = workingPath;
+        workingPath = getRemotePath();
+        try {
+            makeCheckOut(Branch.getActiveBranch());
+        } catch (FileSystemException e) {
+            e.printStackTrace();
+        } finally {
+            workingPath = temp;
+        }
+    }
+
+    private boolean isRRBranchActive(String branchName) {
+        return branchName.equals(getRRHeadBranch(getRemotePath()));
+    }
+
+    private void copyRelevantSha1sPush(List<String> relevantSha1s, Path remotePath) throws IOException {
+        for (String sha1 : relevantSha1s) {
+            File f = findFileInFolderByName(PathConsts.OBJECTS_FOLDER(), sha1);
+            if (!Files.exists(Paths.get(PathConsts.OBJECTS_FOLDER(remotePath) + "/" + f.getName())))
+                Files.copy(f.toPath(), Paths.get(PathConsts.OBJECTS_FOLDER(remotePath) + "/" + f.getName()));
+        }
+    }
+
+    public void updateRBtoSha1(String branchName) {
+        String sha1 = Branch.getCommitSha1ByBranchName(branchName);
+
+    }
+
+    public String getHeadBranchCommitSha1() {
+        File f = findFileInFolderByName(PathConsts.BRANCHES_FOLDER(), Branch.getActiveBranch());
+        if (f == null || !f.exists())
+            throw new UnsupportedOperationException("Branch not found " + Branch.getActiveBranch());
+        if (Branch.checkRTB(Branch.getActiveBranch()))
+            return unzipFileToString(f).split("\n")[0];
+        return unzipFileToString(f);
+    }
+
+    public void createNewRBLocally(String branchName, String branchSha1) throws IOException {
+        File f = createTextRepresentation(branchSha1, branchName);
+        deleteFileFromFolder(PathConsts.REMOTE_BRANCHES_FOLDER(), branchName);
+        zipFile(f, branchName, PathConsts.REMOTE_BRANCHES_FOLDER());
+        f.delete();
+    }
+
+    public void createNewRBinRemote(String branchName, String branchSha1) throws IOException {
+        File f = createTextRepresentation(branchSha1, branchName);
+        deleteFileFromFolder(PathConsts.BRANCHES_FOLDER(getRemotePath()), branchName);
+        zipFile(f, branchName, PathConsts.BRANCHES_FOLDER(getRemotePath()));
+        f.delete();
+    }
+
+    public void makeBranchRTB(String branchName, String branchSha1) throws IOException {
+        String toWrite = (branchSha1 + "\n" + getRemotePath());
+        deleteFileFromFolder(PathConsts.BRANCHES_FOLDER(), branchName);
+        File f = createTextRepresentation(toWrite, branchName);
+        zipFile(f, branchName, PathConsts.BRANCHES_FOLDER());
+        f.delete();
     }
 }

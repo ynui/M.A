@@ -18,12 +18,16 @@ import static appManager.ZipHandler.*;
 import static appManager.appManager.*;
 
 public class Commit {
+    public String getNote() {
+        return note;
+    }
+
     private String note;
     private String author;
     private String dateCreated;
     private String sha1;
 
-    Commit(String inNote, String inAuthor) {
+    public Commit(String inNote, String inAuthor) {
         note = inNote;
         author = inAuthor;
         dateCreated = setDate();
@@ -67,14 +71,19 @@ public class Commit {
         File f = findFileInFolderByName(PathConsts.BRANCHES_FOLDER(), prevBranch);
         if (f.exists())
             prevCommitSha1 = unzipFileToString(f);
+        if (prevCommitSha1.contains("\n"))
+            prevCommitSha1 = prevCommitSha1.substring(0, prevCommitSha1.indexOf("\n"));
         return prevCommitSha1;
     }
 
     public static String getSecHeadCommitSha1(String branchName) {
-        String prevCommitSha1 = null;
+        String prevCommitSha1 = "";
         File f = findFileInFolderByName(PathConsts.BRANCHES_FOLDER(), branchName);
-        if (f.exists())
-            prevCommitSha1 = unzipFileToString(f);
+        if (f == null || !f.exists())
+            f = findFileInFolderByName(PathConsts.REMOTE_BRANCHES_FOLDER(), branchName);
+        prevCommitSha1 = unzipFileToString(f);
+        if (prevCommitSha1.contains("\n"))
+            prevCommitSha1 = prevCommitSha1.substring(0, prevCommitSha1.indexOf("\n"));
         return prevCommitSha1;
     }
 
@@ -144,18 +153,27 @@ public class Commit {
 
     public static List<String> getPrevCommits(Commit.commitComps c) {
         List<String> out = new LinkedList();
-        if(!c.getPrevCommit().equals("")) out.add(c.getPrevCommit());
-        if(!c.getSecPrevCommit().equals("")) out.add(c.getSecPrevCommit());
+        if (!c.getPrevCommit().equals("")) out.add(c.getPrevCommit());
+        if (!c.getSecPrevCommit().equals("")) out.add(c.getSecPrevCommit());
         return out;
     }
 
-    public static CommitRepresentative sha1ToCommitComps(String sha1) {
+    public static List<String> getPrevCommitsBySha1(String sha1) {
+        return getPrevCommits(sha1ToCommitComps(sha1));
+    }
+
+    public static CommitRepresentative sha1ToCommitRepresentative(String sha1) {
         List<String> commitRep = unzipFolderToCompList(sha1, PathConsts.OBJECTS_FOLDER());
         return (new Commit.commitComps(sha1, commitRep.get(0), commitRep.get(1), commitRep.get(2), commitRep.get(3), commitRep.get(4), commitRep.get(5)));
     }
 
-    public static void createMergedCommit(appManager m, String note, String username, String branchName, MergeHandler mergeHandler) {
-        Commit newCommit = new Commit(note, username);
+    public static Commit.commitComps sha1ToCommitComps(String sha1) {
+        List<String> commitRep = unzipFolderToCompList(sha1, PathConsts.OBJECTS_FOLDER());
+        return (new Commit.commitComps(sha1, commitRep.get(0), commitRep.get(1), commitRep.get(2), commitRep.get(3), commitRep.get(4), commitRep.get(5)));
+    }
+
+    public static void createMergedCommit(appManager m, Commit commit, String branchName, MergeHandler mergeHandler) {
+        Commit newCommit = commit;
         //Where to use?
         String prevSha1 = getHeadCommitSha1();
         String secPrevSha1 = getSecHeadCommitSha1(branchName);
@@ -165,7 +183,7 @@ public class Commit {
             String commitTxtRep = headFolderSha1 + "\n" +
                     prevSha1 + "\n" +
                     secPrevSha1 + "\n" +
-                    note + "\n" +
+                    newCommit.getNote() + "\n" +
                     newCommit.getDateCreated() + "\n" +
                     newCommit.getAuthor();
             File headFolderRep = createTextRepresentation(head.toString(), headFolderSha1);
@@ -264,7 +282,7 @@ public class Commit {
 
         @Override
         public boolean equals(Object obj) {
-            if(obj instanceof commitComps){
+            if (obj instanceof commitComps) {
                 return this.sha1.equals(((commitComps) obj).getSha1());
             }
             return false;
@@ -280,7 +298,7 @@ public class Commit {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-                return thisDate.compareTo(otherDate);
+            return thisDate.compareTo(otherDate);
 
         }
     }

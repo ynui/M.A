@@ -212,7 +212,6 @@ public class MagitRepository {
         this.name = value;
     }
 
-
     /**
      * <p>Java class for anonymous complex type.
      *
