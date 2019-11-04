@@ -1,0 +1,21 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="MAGitHub:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/MAGitHub_war_exploded</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="MAGitHub" />
+          <element id="module-output" name="Engine" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="application" name="gson-2.8.5" />
+          <element id="library" level="application" name="commons-codec-1.12" />
+          <element id="library" level="application" name="commons-io-2.6" />
+          <element id="file-copy" path="$PROJECT_DIR$/lib/AncestorFinder.jar" />
+          <element id="artifact" artifact-name="Engine:jar" />
+        </element>
+      </element>
+      <element id="javaee-facet-resources" facet="MAGitHub/web/Web" />
+    </root>
+  </artifact>
+</component>

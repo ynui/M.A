@@ -42,7 +42,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import puk.team.course.magit.ancestor.finder.AncestorFinder;
-import tasks.deployXmlTask;
 
 import java.awt.*;
 import java.io.File;
@@ -186,7 +185,6 @@ public class MAGitController {
         s.getRoot().getStyleClass().add("Background");
         if (CSS_PATH != null)
             s.getStylesheets().add(CSS_PATH);
-
     }
 
     public static void setTheme(Alert a) {
@@ -355,11 +353,6 @@ public class MAGitController {
         } catch (Exception e) {
             showExceptionDialog(e);
         }
-    }
-
-    private void deployXml(XmlRepo xmlRepo) {
-        Task<Boolean> deployXmlTask = new deployXmlTask(xmlRepo, manager);
-        new Thread(deployXmlTask).start();
     }
 
     public void setPrimaryStage(Stage primaryStage) {
@@ -1181,6 +1174,7 @@ public class MAGitController {
         }
     }
 
+    //accept PR
     private void pushNewLocalBranch() {
         String activeBranchName = Branch.getActiveBranch();
         String activeBranchSha1 = Branch.getCommitSha1ByBranchName(activeBranchName);

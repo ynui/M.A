@@ -27,7 +27,7 @@ public class Branch implements Comparable<Branch> {
         return false;
     }
 
-    private static List<Branch> getLocalBranches() {
+    public static List<Branch> getLocalBranches() {
         List<Branch> out = new LinkedList<>();
         List<File> files = getFiles(Paths.get(PathConsts.BRANCHES_FOLDER()));
         for (File f : files) {
@@ -42,6 +42,22 @@ public class Branch implements Comparable<Branch> {
             }
         }
         return setBranchListPositioning(out);
+    }
+
+    public static Branch getActiveActualBranch() {
+        List<Branch> branches = Branch.allBranchesToList();
+        for (Branch b : branches) {
+            if (b.isActive)
+                return b;
+        }
+        return null;
+    }
+
+    public static List<Commit.commitComps> getAllCommitsHub(String activeBranch) {
+            if (activeBranch.equals("HEAD")) return new LinkedList<>();
+            String headCommitSha1 = unzipFileToString(findFileInFolderByName(PathConsts.BRANCHES_FOLDER(),activeBranch));
+            headCommitSha1 = headCommitSha1.substring(0,40);
+            return branchHistoryToListByCommitSha1(headCommitSha1);
     }
 
     public String getName() {
@@ -176,6 +192,9 @@ public class Branch implements Comparable<Branch> {
 
     public static boolean checkRTB(String name) {
         return (unzipFolderToCompList(name, PathConsts.BRANCHES_FOLDER()).size() > 1);
+    }
+    public static boolean checkRTB(String name, String path) {
+        return (unzipFolderToCompList(name, path).size() > 1);
     }
 
     public boolean checkRTB() {

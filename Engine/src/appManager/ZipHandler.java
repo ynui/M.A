@@ -59,9 +59,8 @@ public class ZipHandler {
                 InputStream stream = zipFile.getInputStream(entry);
                 return inputStreamToString(stream);
             }
-        } catch (ZipException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
+            System.out.println(f.getName());
             e.printStackTrace();
         } finally {
             try {

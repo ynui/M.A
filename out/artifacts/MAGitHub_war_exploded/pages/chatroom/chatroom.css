@@ -1,0 +1,11 @@
+.chatArea {
+    position: absolute;
+    width: 100%;
+    overflow-y: auto;
+    height: 80%;
+}
+
+.chat{
+    position: absolute;
+    bottom: 0px;
+}

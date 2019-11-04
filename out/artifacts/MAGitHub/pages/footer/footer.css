@@ -1,0 +1,60 @@
+body > iframe {
+    display: block;
+}
+
+a {
+    color: #888888;
+    text-decoration: none;
+}
+
+.info_card {
+    text-align: center;
+    display: flex;
+    background-color: wheat;
+    border: solid 6px #888888;
+    border-right-style: inset;
+    border-radius: 10px;
+    border-left-style: inset;
+    border-right-style: outset;
+}
+
+.info_card > div {
+    margin-left: 11%;
+    margin-right: 11%;
+    display: flex;
+}
+
+.info_card > div > p, i {
+    font-family: fantasy;
+    font-size: 1.9em;
+    margin-bottom: 5%;
+    margin-top: 5%;
+    margin-right: 10%;
+}
+
+.admin > div {
+    margin-top: inherit;
+}
+
+.item {
+    margin-left: inherit;
+    margin-top: inherit;
+    font-family: cursive;
+    display: inline-table;
+    font-family: cursive;
+    text-decoration: none;
+    font-size: 1.4em;
+    text-align: center;
+    font-weight: bold;
+    align-self: center;
+    border-style: solid;
+    color: #888888;
+    text-shadow: 2px 2px #0e0600;
+    border-width: 7px;
+    border-color: #888888;
+    background: wheat;
+    border-radius: 28px;
+    border-left-style: inset;
+    border-right-style: outset;
+}
+

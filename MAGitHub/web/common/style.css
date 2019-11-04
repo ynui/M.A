@@ -1,0 +1,50 @@
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+
+div {
+    height: 100%;
+    width: 100%;
+}
+
+html, body {margin: 0; height: 100%; overflow: auto}
+.footerClass{
+    background: lightgray;
+    box-sizing: content-box; /* So the width will be 100% + 17px */
+    height: 15%;
+    width: 100%;
+    display: flex;
+    margin: 0;
+}
+.bodyClass {
+    background: lightgray;
+    box-sizing: content-box; /* So the width will be 100% + 17px */
+    height: 70%;
+    width: 100%;
+    display: flex;
+    margin: 0;
+}
+
+.headTitle {
+    box-sizing: content-box; /* So the width will be 100% + 17px */
+    background: #ababab;
+    height: 15%;
+    width: 100%;
+}
+
+.headContent {
+    text-align: right;
+}
+
+/*
+menu style
+    font-family: cursive;
+  text-decoration: none;
+  font-size: 1.5em;
+  text-align: center;
+  font-weight: bold;
+align-self: center;
+text-shadow: 2px 2px saddlebrown;
+ */

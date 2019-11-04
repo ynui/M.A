@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="MAGitHub:war">
+    <output-path>$PROJECT_DIR$/../tomcat-8.5.46/webapps/</output-path>
+    <root id="archive" name="MAGitHub_war.war">
+      <element id="artifact" artifact-name="MAGitHub:war exploded" />
+    </root>
+  </artifact>
+</component>

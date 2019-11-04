@@ -7,6 +7,8 @@ import java.util.List;
 
 public class PathConsts {
 
+    public static final String HUB_FOLDER = "c:/magit-ex3/";
+
     public static String OBJECTS_FOLDER() {
         return appManager.workingPath + "/.magit/objects/";
     }

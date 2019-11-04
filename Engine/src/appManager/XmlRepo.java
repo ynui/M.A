@@ -7,8 +7,7 @@ import XMLgenerated.MagitRepository.MagitRemoteReference;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
@@ -23,6 +22,7 @@ public class XmlRepo {
     private List<MagitSingleBranch> localBranches;
     private List<MagitSingleBranch> remoteBranches;
     private List<MagitSingleBranch> remoteTrackingBranches;
+    private String name;
 
 
     private MagitRepository repository;
@@ -31,6 +31,10 @@ public class XmlRepo {
     private MagitFolders folders;
     private MagitBlobs blobs;
     private MagitRemoteReference remoteReference;
+
+    public String getName() {
+        return name;
+    }
 
     public MagitRemoteReference getRemoteReference() {
         return remoteReference;
@@ -85,6 +89,28 @@ public class XmlRepo {
             this.folders = repo.getMagitFolders();
             this.blobs = repo.getMagitBlobs();
             this.remoteReference = repo.getMagitRemoteReference();
+            this.name = repo.getName();
+            createBranchesLists();
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+    }
+    public XmlRepo(String content, boolean hub) throws FileNotFoundException {
+        this.remoteTrackingBranches = new LinkedList<>();
+        this.remoteBranches = new LinkedList<>();
+        this.localBranches = new LinkedList<>();
+        try {
+            JAXBContext jaxbContext = JAXBContext.newInstance(MagitRepository.class);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            StringReader sr = new StringReader(content);
+            MagitRepository repo = (MagitRepository) jaxbUnmarshaller.unmarshal(sr);
+            this.repository = repo;
+            this.allBranches = repo.getMagitBranches();
+            this.commits = repo.getMagitCommits();
+            this.folders = repo.getMagitFolders();
+            this.blobs = repo.getMagitBlobs();
+            this.remoteReference = repo.getMagitRemoteReference();
+            this.name = repo.getName();
             createBranchesLists();
         } catch (JAXBException e) {
             e.printStackTrace();

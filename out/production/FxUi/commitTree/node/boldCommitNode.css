@@ -1,0 +1,33 @@
+.Background{
+    -fx-background-color: yellow;
+}
+
+.branch-label {
+    -fx-background-color: yellow;
+}
+
+/*override separator style*/
+.separator .line {
+    -fx-border-width: 1;
+}
+
+.Node-style:hover {
+    -fx-border-color: black;
+    -fx-background-color: lightgrey;
+    -fx-background-radius: 3px;
+}
+
+.Node-style:focused {
+    -fx-border-color: black;
+    -fx-background-color: lightgrey;
+    -fx-background-radius: 3px;
+}
+
+.remote-label {
+    -fx-background-color: lightgreen;
+    -fx-orientation: center;
+}
+
+.marked {
+    -fx-font-weight: bold;
+}

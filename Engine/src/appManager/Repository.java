@@ -7,15 +7,23 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Repository {
+    private String name;
     private Path path;
     private Folder headFolder;
 
     public Repository() {
     }
 
+    public Repository(Path path, String name) {
+        this.path = path;
+        this.headFolder = new Folder();
+        this.name = name;
+    }
+
     public Repository(Path path) {
         this.path = path;
         this.headFolder = new Folder();
+        this.name = String.valueOf(path.getFileName());
     }
 
     public Folder getHeadFolder() {
@@ -26,6 +34,9 @@ public class Repository {
         this.headFolder = headFolder;
     }
 
+    public String getName() {
+        return name;
+    }
 
     public Path getPath() {
         return path;
@@ -50,5 +61,4 @@ public class Repository {
         newRepo.headFolder = new Folder();
         return newRepo;
     }
-
 }
